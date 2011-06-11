@@ -1,4 +1,4 @@
 #!/bin/bash
 
-cd tests-0.3
+cd tests
 bin/testmsim

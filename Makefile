@@ -1,12 +1,12 @@
-LIBSDIR = msim-0.3
-TESTSDIR = tests-0.3
+LIBSDIR = msim
+TESTSDIR = tests
 
-all: libs tests
+all: lib test
 
-libs:
+lib:
 	cd $(LIBSDIR); make all
 
-tests:
+test:
 	cd $(TESTSDIR); make all
 
 clean:

@@ -62,7 +62,7 @@ clean: FORCE
 	rm $(OBJ) $(TARGET)
 
 distclean:
-	make clean
+	make --always-make clean
 	rm $(MAKEFILE)
 
 $(TARGET): $(BIN_DIR) $(OBJ_DIR) $(OBJ) 
