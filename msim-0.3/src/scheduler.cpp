@@ -21,6 +21,14 @@ Scheduler::run ()
 }
 
 void
+Scheduler::runUntil (const SimTime & endTime)
+{
+  do {
+   step ();
+  } while (currentTime < endTime);
+}
+
+void
 Scheduler::step ()
 {
   cout << __PRETTY_FUNCTION__ << endl;

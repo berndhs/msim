@@ -13,6 +13,7 @@ public:
 
   Scheduler ();
   void run ();
+  void runUntil (const SimTime & endTime);
 
 private:
 

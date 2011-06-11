@@ -4,7 +4,7 @@ int
 main (int argc, char* argv[])
 {
   miniscsim::Scheduler Sch;
-
-  Sch.run ();
+  miniscsim::SimTime  endTime (21);
+  Sch.runUntil (endTime);
   return 0;
 }

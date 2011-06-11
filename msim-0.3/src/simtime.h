@@ -67,14 +67,19 @@ public:
     whichEternity = beforeUniverse;
   }
 
-  SimTimeT<TimeType> (const SimTimeT<TimeType>& sOld) {
-    whichEternity = sOld.whichEternity;
-    t = sOld.t;
+  SimTimeT<TimeType> (const SimTimeT<TimeType>& other) {
+    whichEternity = other.whichEternity;
+    t = other.t;
   }
 
   SimTimeT<TimeType> (Eternity when) {
     whichEternity = when;
     t = 0;
+  }
+
+  SimTimeT<TimeType> (Eternity eternity, TimeType tick) {
+    whichEternity = eternity;
+    t = tick;
   }
 
   SimTimeT<TimeType> (TimeType theTime) {
