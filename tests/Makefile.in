@@ -12,7 +12,7 @@ OBJ_DIR = obj
 SRC_DIR = src
 BIN_DIR = bin
 
-PROJECT_NAME=msimtest
+PROJECT_NAME=testmsim
 MAKEFILE = Makefile
 TOP_MAKEFILE = Makefile
 TARGET = $(BIN_DIR)/${PROJECT_NAME}

@@ -3,6 +3,8 @@
 
 using namespace std;
 
+#include "simtime.h"
+
 namespace miniscsim 
 {
 class Scheduler {
@@ -11,6 +13,10 @@ public:
 
   Scheduler ();
   void Run ();
+
+private:
+
+  SimTime   currentTime;
 
 };
 
