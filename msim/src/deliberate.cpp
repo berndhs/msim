@@ -28,45 +28,4 @@
 
 namespace deliberate {
 
-QTextStream & StdOut ()
-{
-  static QTextStream *out(0);
-  
-  if (out == 0) {
-    out = new QTextStream (stdout);
-  }
-  return *out;
-}
-
-
-static QSettings * mySettings(0);
-  
-void
-InitSettings ()
-{
-  mySettings = 0;
-}
-
-void
-SetSettings (QSettings & settings)
-{
-  if (mySettings) {
-    delete mySettings;
-  }
-  mySettings = &settings;
-}
-
-QSettings &
-Settings ()
-{
-  if (mySettings == 0) {
-    mySettings = new QSettings;
-  }
-  if (mySettings == 0) {
-    std::cerr << "Cannot allocate Settings, have to quit" << std::endl;
-    abort ();
-  }
-  return *mySettings;
-}
-
 }
