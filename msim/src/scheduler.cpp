@@ -34,6 +34,12 @@ Scheduler::Scheduler ()
   cout << __PRETTY_FUNCTION__ << " allocated " << endl;
 }
 
+SimTime
+Scheduler::simTime () const
+{
+  return currentTime;
+}
+
 void
 Scheduler::run ()
 {

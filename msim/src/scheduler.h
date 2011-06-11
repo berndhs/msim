@@ -37,6 +37,8 @@ public:
   void run ();
   void runUntil (const SimTime & endTime);
 
+  SimTime simTime () const;
+
 private:
 
   void step ();
