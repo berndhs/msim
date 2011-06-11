@@ -12,9 +12,11 @@ class Scheduler {
 public:
 
   Scheduler ();
-  void Run ();
+  void run ();
 
 private:
+
+  void step ();
 
   SimTime   currentTime;
 

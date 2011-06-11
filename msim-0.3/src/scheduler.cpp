@@ -13,10 +13,19 @@ Scheduler::Scheduler ()
 }
 
 void
-Scheduler::Run ()
+Scheduler::run ()
 {
   cout << __PRETTY_FUNCTION__ << " running " << endl;
   cout << "                " << currentTime << endl;
+  step ();
+}
+
+void
+Scheduler::step ()
+{
+  cout << __PRETTY_FUNCTION__ << endl;
+  currentTime +=1;
+  cout << "              " << currentTime << endl;
 }
 
 } // namespace

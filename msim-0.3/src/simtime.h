@@ -97,10 +97,15 @@ public:
     // can't get any later
   }
 
-  SimTimeT<TimeType> operator+ (TimeType incr) {
+  SimTimeT<TimeType> operator+ (TimeType incr) const {
     SimTimeT<TimeType> result (*this);
     result.Advance (incr);
     return result;
+  }
+
+  SimTimeT<TimeType> operator+= (TimeType incr) {
+    Advance (incr);
+    return *this;
   }
 
   static SimTimeT<TimeType> TooEarly () {
