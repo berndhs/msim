@@ -22,15 +22,16 @@ MyEvent::MyEvent (msim::Scheduler * sched)
 msim::Event *
 MyEvent::copy () const
 {
-  MyEvent * cp = new MyEvent (scheduler());
+  MyEvent * cp = new MyEvent (*this);
   return cp;
 }
 
 void
 MyEvent::happen ()
 {
-  cerr << __PRETTY_FUNCTION__ << " is was time at " 
-       << scheduler()->simTime()
+  cerr << __PRETTY_FUNCTION__ << " time "
+       << " for " << id() 
+       << " at " << scheduler()->simTime()
        << " next is " << when() 
        << endl;
 }
@@ -40,8 +41,17 @@ main (int argc, char* argv[])
 {
   msim::Scheduler Sch;
   msim::SimTime  endTime (21);
-  MyEvent  myEvent (&Sch);
-  Sch.schedule (myEvent, msim::SimTime (10));
+  MyEvent  ev1 (&Sch);
+  Sch.schedule (ev1, msim::SimTime (10));
+
+  MyEvent ev2 (&Sch);
+  Sch.schedule (ev2, msim::SimTime (15));
+
+  MyEvent ev3 (&Sch);
+  Sch.schedule (ev3, msim::SimTime (19));
+
+  Sch.schedule (ev1, msim::SimTime (17)); // should replace the earlier one
+
   Sch.runUntil (endTime);
   cerr << " time of last event " << Sch.lastEventTime() << endl;
   return 0;

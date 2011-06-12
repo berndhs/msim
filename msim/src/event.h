@@ -79,7 +79,10 @@ class EventList : public TimedEventMap
 {
 public:
 
-  void erase (const SimTime & when, const Event * event);    
+  void erase (EventList::iterator pos) {
+    TimedEventMap::erase (pos);
+  }
+  void erase (const SimTime & when, int eventId);    
   void erase (EventList::iterator first, EventList::iterator last) {
     TimedEventMap::erase (first, last);
   }

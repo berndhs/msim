@@ -45,7 +45,8 @@ Event::Event (const Event &other)
 
 Event::~Event()
 {
-  cout << "Deallocating event " << hex << this << dec << endl;
+  cout << "Deallocating event " << hex << this << dec 
+       << " id " << id() << endl;
 }
 
 SimTime
@@ -68,16 +69,21 @@ operator<< (ostream & ost, const Event & evt)
 }
 
 void
-EventList::erase (const SimTime & when, const Event * event)
+EventList::erase (const SimTime & when, int eventId)
 {
-  iterator it = lower_bound (when);        
+  cerr << __PRETTY_FUNCTION__ << " time " << when 
+       << " event " << eventId << endl;
+  iterator it = lower_bound (when);
   while (it != end() && it->first == when) {
-    if (it->second == event) {
+    Event * candidate = it->second;
+    cerr << "   check for erase id " << candidate->id() << endl;
+    if (candidate && candidate->id() == eventId) {
+      cerr << "   found it " << candidate << " id " << candidate->id() << endl;
       TimedEventMap::erase (it);
+      delete candidate;
       break;
-    } else {
-      it++;
     }
+    it++;
   }
 }
 

@@ -79,10 +79,10 @@ Scheduler::runUntil (const SimTime & endTime)
       Event* event = it->second;
       if (event) {
         currentTime = eventTimes[event->id()];
-        eventList.erase (currentTime, event);
-        eventTimes.erase (event->id());
         event->happen ();
         lastHappenTime = currentTime;
+        eventTimes.erase (event->id());
+        eventList.erase (it);
         delete event;
         it = eventList.lower_bound (currentTime);
       } else {
@@ -102,11 +102,14 @@ Scheduler::removePastEvents (const SimTime & upperLimit)
   cerr << __PRETTY_FUNCTION__ << " until " << upperLimit << endl;
   SimTime firstBadTime (upperLimit);
   firstBadTime.advance ();
+  cerr << "    keep all from time " << firstBadTime << endl;
   EventList::iterator lastToRemove = eventList.upper_bound (firstBadTime);
   if (lastToRemove != eventList.end()) {
+    cerr << "   found some to remove " << endl;
     for (EventList::iterator chase = eventList.begin();
          chase != lastToRemove;
          chase++) {
+      cerr << "    try to remove " << chase->second << endl;
       if (chase->second) {
         delete chase->second;
       }
@@ -126,11 +129,19 @@ Scheduler::schedule (const Event & evt, const SimTime & when)
   pEvent->scheduler = this;
   EventTimeMap::iterator eit = eventTimes.find (pEvent->id());
   if (eit != eventTimes.end()) {
-    eventList.erase (when, pEvent);
-    eventTimes.erase (pEvent->id());
+    cerr << "   event already scheduled, removeing old one "
+         << pEvent->id() << " at " << eit->second
+         << endl;
+    eventList.erase (eit->second, pEvent->id());
+  } else {
+    cerr << "  event new to schedule " << pEvent->id() << endl;
   }
   eventList.insert (Event::ListPair (when, pEvent));
   eventTimes[pEvent->id()] = when;
+  cerr << "     event " << pEvent->id() 
+       << " now scheduled at " << pEvent->when() << endl;
+  cerr << "   total events list " << eventList.size () << " times " 
+       << eventTimes.size () << endl;
 }
 
 } // namespace
