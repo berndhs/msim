@@ -22,31 +22,36 @@
  *  Boston, MA  02110-1301, USA.
  ****************************************************************/
 
+#include "simtime.h"
+#include "deliberate.h"
+#include <map>
 
 using namespace std;
-
-#include "simtime.h"
-#include <map>
+using namespace deliberate;
 
 namespace msim {
 // an Event consists of a time (when it happens)
 // and a set of entities that want to know that
 // this has happened.
 
+class Scheduler;
+
 class Event {
 
  public:
 
-  Event();
-  Event(SimTime when);
+  Event (Scheduler * scheduler);
+  Event (const Event & other);
   virtual ~Event();
 
-  void setTime(SimTime when);
+  Property <Scheduler*>  scheduler;
+
+  int id () const { return ident; }
 
   virtual void    happen() = 0;
   virtual Event  *copy () const = 0;
 
-  SimTime  time() const { return dueTime; }
+  SimTime when () const;
 
   struct timeless {
     bool operator() (const SimTime t1, const SimTime t2) 
@@ -57,19 +62,25 @@ class Event {
 
   typedef std::pair<SimTime, Event*> ListPair;
 
-protected:
+private:
 
-  SimTime    dueTime;
+  int         ident;
 
-friend ostream & operator<< (ostream & ost, const Event & evt);
+  static int  eventCounter;
 
 };
 
 ostream & 
 operator<< (ostream & ost, const Event & evt);
 
+typedef std::multimap <SimTime, Event *, Event::timeless>  TimedEventMap;
 
-typedef std::multimap <SimTime, Event*, Event::timeless>  EventList;
+class EventList : public TimedEventMap
+{
+public:
+
+  void erase (const SimTime & when, const Event * event);    
+};
 
 } // namespace msim
 #endif

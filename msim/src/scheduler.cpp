@@ -40,6 +40,17 @@ Scheduler::simTime () const
   return currentTime;
 }
 
+SimTime
+Scheduler::dueTime (int eventId)
+{
+  EventTimeMap::iterator it = eventTimes.find (eventId);
+  if (it == eventTimes.end()) {
+    return SimTime::tooLate();
+  } else {
+    return it->second;
+  }
+}
+
 void
 Scheduler::run ()
 {
@@ -67,7 +78,9 @@ Scheduler::step ()
        it != eventList.end () && it->first < nextTick;
        it++) {
     Event* event = it->second;
+    eventList.erase (currentTime, event);
     if (event) {
+      eventTimes.erase (event->id());
       event->happen ();
       delete event;
     }
@@ -77,10 +90,17 @@ Scheduler::step ()
 }
 
 void
-Scheduler::addEvent (const Event & evt)
+Scheduler::schedule (const Event & evt, const SimTime & when)
 {
   Event * pEvent = evt.copy ();
-  eventList.insert (Event::ListPair (pEvent->time(), pEvent));
+  pEvent->scheduler = this;
+  EventTimeMap::iterator eit = eventTimes.find (pEvent->id());
+  if (eit != eventTimes.end()) {
+    eventList.erase (when, pEvent);
+    eventTimes.erase (pEvent->id());
+  }
+  eventList.insert (Event::ListPair (when, pEvent));
+  eventTimes[pEvent->id()] = when;
 }
 
 } // namespace

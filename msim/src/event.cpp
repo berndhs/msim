@@ -23,18 +23,24 @@
 
 
 #include "event.h"
+#include "scheduler.h"
 #include <iostream>
+
 using namespace std;
 using namespace msim;
 
-Event::Event(SimTime when)
+int Event::eventCounter (1);
+
+Event::Event (Scheduler * scheduler)
+  :scheduler (scheduler),
+   ident (eventCounter++)
 { 
-  dueTime = when;
 }
 
-Event::Event()
-{ 
-  dueTime = SimTime::tooLate();
+Event::Event (const Event &other)
+  :scheduler (other.scheduler()),
+   ident (other.ident)
+{
 }
 
 Event::~Event()
@@ -42,17 +48,36 @@ Event::~Event()
   cout << "Deallocating event " << hex << this << dec << endl;
 }
 
-
-void
-Event::setTime (SimTime when)
+SimTime
+Event::when () const
 {
-  dueTime = when;
+  if (scheduler()) {
+    return scheduler()->dueTime (ident);
+  } else {
+    return SimTime::tooLate();
+  }
 }
+
 
 ostream &
 operator<< (ostream & ost, const Event & evt)
 {
-  ost << "event " << &evt << " at " << evt.time();
+  ost << "event " << evt.id() << " at " << evt.when()
+      << " by " << evt.scheduler();
   return ost;
+}
+
+void
+EventList::erase (const SimTime & when, const Event * event)
+{
+  iterator it = lower_bound (when);        
+  while (it != end() && it->first == when) {
+    if (it->second == event) {
+      TimedEventMap::erase (it);
+      break;
+    } else {
+      it++;
+    }
+  }
 }
 

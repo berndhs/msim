@@ -4,7 +4,7 @@ TESTSDIR = tests
 all: lib test
 
 lib:
-	cd $(LIBSDIR); make all
+	cd $(LIBSDIR); make  all
 
 test:
 	cd $(TESTSDIR); make all

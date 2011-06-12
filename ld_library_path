@@ -1,1 +1,1 @@
-export LD_LIBRARY_PATH="/usr/local/lib:/home/bernd/mywork/sim/0.3/msim/bin"
+export LD_LIBRARY_PATH="/usr/local/lib:/home/bernd/mywork/msim/msim/bin"

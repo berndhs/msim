@@ -38,17 +38,21 @@ public:
   void run ();
   void runUntil (const SimTime & endTime);
 
-  void addEvent (const Event & evt);
-
+  void schedule (const Event & evt, const SimTime & when);
+  SimTime dueTime (int eventId);
+  
   SimTime simTime () const;
 
 private:
 
+  typedef map <int, SimTime>  EventTimeMap;
+
   void step ();
 
-  SimTime      currentTime;
+  SimTime                currentTime;
 
-  EventList    eventList;
+  EventList              eventList;
+  EventTimeMap           eventTimes;
 
 
 };
