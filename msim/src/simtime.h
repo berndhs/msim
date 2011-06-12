@@ -58,53 +58,44 @@ public:
 
   /// \brief constructors
 
-  SimTimeT<TimeType> () {
-    whichEternity = beforeUniverse;
-  }
+  SimTimeT<TimeType> ()
+    :whichEternity (beforeUniverse),
+     t (TimeType()) 
+  {}
 
-  SimTimeT<TimeType> (const SimTimeT<TimeType>& other) {
-    whichEternity = other.whichEternity;
-    t = other.t;
-  }
+  SimTimeT<TimeType> (const SimTimeT<TimeType>& other)
+    :whichEternity (other.whichEternity),
+     t (other.t) 
+  {}
 
-  SimTimeT<TimeType> (Eternity when) {
-    whichEternity = when;
-    t = 0;
-  }
+  SimTimeT<TimeType> (Eternity when)
+    :whichEternity (when),
+     t (TimeType())
+  {}
 
-  SimTimeT<TimeType> (Eternity eternity, TimeType tick) {
-    whichEternity = eternity;
-    t = tick;
-  }
+  SimTimeT<TimeType> (Eternity eternity, TimeType tick)
+    :whichEternity (eternity),
+     t(tick)
+  {}
 
-  SimTimeT<TimeType> (TimeType theTime) {
-    whichEternity = inUniverse;
-    t = theTime;
-  }
+  SimTimeT<TimeType> (TimeType theTime)
+    :whichEternity (inUniverse),
+     t (theTime)
+  {}
 
   void set (TimeType absolute) { // makes it a valid time
     whichEternity = inUniverse;
     t = absolute;
   }
 
-  void advance (TimeType increment = 1) { // makes it valid
-    if (whichEternity == beforeUniverse) {
-      whichEternity = inUniverse;
-      t = increment;
-    } else if (whichEternity == inUniverse) {
-      t += increment;
-    } // otherwise its after the end of the universe anyway,
-    // can't get any later
-  }
-
   SimTimeT<TimeType> operator+ (TimeType incr) const {
     SimTimeT<TimeType> result (*this);
-    result.advance (incr);
+    result.t += incr;
     return result;
   }
 
   SimTimeT<TimeType> operator+= (TimeType incr) {
-    advance (incr);
+    t += incr;
     return *this;
   }
 
@@ -154,8 +145,8 @@ public:
 
 private:
 
-  TimeType t;
   Eternity whichEternity;
+  TimeType t;
 
 
   template <typename TT> friend int operator<

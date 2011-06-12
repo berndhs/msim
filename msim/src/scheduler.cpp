@@ -100,8 +100,7 @@ void
 Scheduler::removePastEvents (const SimTime & upperLimit)
 {
   cerr << __PRETTY_FUNCTION__ << " until " << upperLimit << endl;
-  SimTime firstBadTime (upperLimit);
-  firstBadTime.advance ();
+  SimTime firstBadTime (upperLimit + 1);
   cerr << "    keep all from time " << firstBadTime << endl;
   EventList::iterator lastToRemove = eventList.upper_bound (firstBadTime);
   if (lastToRemove != eventList.end()) {
