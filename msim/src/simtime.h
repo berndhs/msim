@@ -229,7 +229,6 @@ operator >= (const SimTimeT<TimeType>& t1,const SimTimeT<TimeType>& t2)
 
 typedef SimTimeT<long long int> SimTime;
 
-typedef SimTimeT<double> DSimTime;
 
 } // namespace msim
 

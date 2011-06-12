@@ -2,6 +2,7 @@
 #include <iostream>
 #include <scheduler.h>
 #include <event.h>
+#include <version.h>
 
 using namespace std;
 
@@ -39,6 +40,8 @@ MyEvent::happen ()
 int
 main (int argc, char* argv[])
 {
+
+  cout << " using msim version " << msim::Version::version << endl;;
   msim::Scheduler Sch;
   msim::SimTime  endTime (21);
   MyEvent  ev1 (&Sch);
