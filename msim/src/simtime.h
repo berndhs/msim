@@ -1,6 +1,6 @@
 
-#ifndef MINISCSIM_SIMTIME_H
-#define MINISCSIM_SIMTIME_H
+#ifndef MSIM_SIMTIME_H
+#define MSIM_SIMTIME_H
 
 
 
@@ -40,7 +40,7 @@ using namespace std;
 //        (something that has never been requested,
 //         something that will never expire)
 
-namespace miniscsim
+namespace msim
 {
 
 template <typename TimeType>
@@ -82,12 +82,12 @@ public:
     t = theTime;
   }
 
-  void Set (TimeType absolute) { // makes it a valid time
+  void set (TimeType absolute) { // makes it a valid time
     whichEternity = inUniverse;
     t = absolute;
   }
 
-  void Advance (TimeType increment = 1) { // makes it valid
+  void advance (TimeType increment = 1) { // makes it valid
     if (whichEternity == beforeUniverse) {
       whichEternity = inUniverse;
       t = increment;
@@ -99,32 +99,32 @@ public:
 
   SimTimeT<TimeType> operator+ (TimeType incr) const {
     SimTimeT<TimeType> result (*this);
-    result.Advance (incr);
+    result.advance (incr);
     return result;
   }
 
   SimTimeT<TimeType> operator+= (TimeType incr) {
-    Advance (incr);
+    advance (incr);
     return *this;
   }
 
-  static SimTimeT<TimeType> TooEarly () {
+  static SimTimeT<TimeType> tooEarly () {
     return (SimTimeT<TimeType>(beforeUniverse));
   }
 
-  static SimTimeT<TimeType> TooLate () {
+  static SimTimeT<TimeType> tooLate () {
     return (SimTimeT<TimeType>(afterUniverse));
   }
 
-  TimeType Ticks() {
+  TimeType ticks() {
     return t;
   }
-  Eternity Epoch() {
+  Eternity epoch() {
     return whichEternity;
   }
 
 
-  string EpochChar() const {
+  string epochString () const {
     if (whichEternity == inUniverse) {
       return string ("CE");     // Current Epoch
     } else if (whichEternity == beforeUniverse) {
@@ -136,7 +136,7 @@ public:
     }
   }
 
-  void Dump( ostream& out) {
+  void dump( ostream& out) {
     if (whichEternity == inUniverse) {
       out << t ;
     } else {
@@ -180,7 +180,7 @@ private:
 
   template <typename TT> friend ostream& operator<<
   (ostream& out, const SimTimeT<TT>& t1) {
-    out << "<" << t1.EpochChar() << "," << t1.t << ">";
+    out << "<" << t1.epochString() << "," << t1.t << ">";
     return out;
   }
 
@@ -240,6 +240,6 @@ typedef SimTimeT<long long int> SimTime;
 
 typedef SimTimeT<double> DSimTime;
 
-} // namespace miniscsim
+} // namespace msim
 
 #endif

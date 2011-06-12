@@ -35,9 +35,9 @@ include files.inc
 
 CXX = g++
 CXX_CFLAGS = -O2 -Wall -g
-CXX_LDFLAGS = -lminiscsim
-EXTRA_INC= -I../msim-0.3/src
-EXTRA_LIB= -L../msim-0.3/bin
+CXX_LDFLAGS = -lmsim
+EXTRA_INC= -I../msim/src
+EXTRA_LIB= -L../msim/bin
 LIBS =
 INCLUDE = -I$(SRC_DIR)/ -I/usr/local/include $(EXTRA_INC)
 

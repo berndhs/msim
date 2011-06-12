@@ -22,7 +22,6 @@
  *  Boston, MA  02110-1301, USA.
  ****************************************************************/
  
-#include <QStringList>
 #include <iostream>
 #include <stdlib.h>
 

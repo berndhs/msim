@@ -31,7 +31,7 @@ OBJ_DIR = obj
 SRC_DIR = src
 BIN_DIR = bin
 
-PROJECT_NAME=miniscsim
+PROJECT_NAME=msim
 MAKEFILE = Makefile
 TOP_MAKEFILE = Makefile
 TARGET = $(BIN_DIR)/lib${PROJECT_NAME}.so

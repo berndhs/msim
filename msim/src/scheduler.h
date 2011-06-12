@@ -1,5 +1,5 @@
-#ifndef MINISCSIM_SCHEDULER_H
-#define MINISCSIM_SCHEDULER_H
+#ifndef MSIM_SCHEDULER_H
+#define MSIM_SCHEDULER_H
 
 
 /****************************************************************
@@ -25,9 +25,12 @@
 
 using namespace std;
 
-#include "simtime.h"
+#include <map>
 
-namespace miniscsim 
+#include "simtime.h"
+#include "event.h"
+
+namespace msim 
 {
 class Scheduler {
 
@@ -41,9 +44,20 @@ public:
 
 private:
 
+  struct timeless {
+    bool operator() (const SimTime t1, const SimTime t2) 
+      const {
+      return t1 < t2 ;
+    }
+  };
+
+
+  typedef multimap <SimTime, Event *, timeless>  EventList;
+
   void step ();
 
   SimTime   currentTime;
+
 
 };
 

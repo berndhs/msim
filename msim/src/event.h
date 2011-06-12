@@ -1,6 +1,5 @@
-#include "scheduler.h"
-#include <iostream>
-
+#ifndef MSIM_EVENT_H
+#define MSIM_EVENT_H
 
 /****************************************************************
  * This file is distributed under the following license:
@@ -23,45 +22,37 @@
  *  Boston, MA  02110-1301, USA.
  ****************************************************************/
 
+
 using namespace std;
 
-namespace msim
-{
+#include "simtime.h"
 
-Scheduler::Scheduler ()
-  :currentTime (1)
-{
-  cout << __PRETTY_FUNCTION__ << " allocated " << endl;
-}
+namespace msim {
+// an Event consists of a time (when it happens)
+// and a set of entities that want to know that
+// this has happened.
 
-SimTime
-Scheduler::simTime () const
-{
-  return currentTime;
-}
+class Event {
 
-void
-Scheduler::run ()
-{
-  cout << __PRETTY_FUNCTION__ << " running " << endl;
-  cout << "                " << currentTime << endl;
-  step ();
-}
+ public:
 
-void
-Scheduler::runUntil (const SimTime & endTime)
-{
-  do {
-   step ();
-  } while (currentTime < endTime);
-}
+  Event();
+  Event(SimTime when);
+  virtual ~Event();
 
-void
-Scheduler::step ()
-{
-  cout << __PRETTY_FUNCTION__ << endl;
-  currentTime +=1;
-  cout << "              " << currentTime << endl;
-}
+  void setTime(SimTime when);
 
-} // namespace
+  virtual void happen() = 0;
+
+  SimTime  time() { return dueTime; }
+
+  virtual void dump (ostream& out);
+
+ protected:
+
+  SimTime    dueTime;
+
+};
+
+} // namespace msim
+#endif

@@ -1,5 +1,3 @@
-#include "scheduler.h"
-#include <iostream>
 
 
 /****************************************************************
@@ -23,45 +21,39 @@
  *  Boston, MA  02110-1301, USA.
  ****************************************************************/
 
+
+#include "event.h"
+#include <iostream>
 using namespace std;
+using namespace msim;
 
-namespace msim
-{
-
-Scheduler::Scheduler ()
-  :currentTime (1)
-{
-  cout << __PRETTY_FUNCTION__ << " allocated " << endl;
+Event::Event(SimTime when)
+{ 
+  dueTime = when;
 }
 
-SimTime
-Scheduler::simTime () const
+Event::Event()
+{ 
+  dueTime = SimTime::tooLate();
+}
+
+Event::~Event()
 {
-  return currentTime;
+  cout << "Deallocating event " << hex << this << dec << endl;
+}
+
+
+void
+Event::setTime (SimTime when)
+{
+  dueTime = when;
 }
 
 void
-Scheduler::run ()
+Event::dump (ostream& out)
 {
-  cout << __PRETTY_FUNCTION__ << " running " << endl;
-  cout << "                " << currentTime << endl;
-  step ();
+  out << "event " << this << " at " ;
+  dueTime.dump(out);
+  out << endl;
 }
 
-void
-Scheduler::runUntil (const SimTime & endTime)
-{
-  do {
-   step ();
-  } while (currentTime < endTime);
-}
-
-void
-Scheduler::step ()
-{
-  cout << __PRETTY_FUNCTION__ << endl;
-  currentTime +=1;
-  cout << "              " << currentTime << endl;
-}
-
-} // namespace
