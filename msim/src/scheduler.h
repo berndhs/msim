@@ -38,7 +38,7 @@ public:
   void run ();
   void runUntil (const SimTime & endTime);
 
-  void addEvent (Event * pEvent);
+  void addEvent (const Event & evt);
 
   SimTime simTime () const;
 

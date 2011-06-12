@@ -10,12 +10,20 @@ public:
 
   MyEvent (msim::SimTime when);
 
-  void happen () ;
+  void          happen () ;
+  msim::Event * copy () const;
 };
 
 MyEvent::MyEvent (msim::SimTime when)
   :Event (when)
 {
+}
+
+msim::Event *
+MyEvent::copy () const
+{
+  MyEvent * cp = new MyEvent (time());
+  return cp;
 }
 
 void
@@ -30,7 +38,7 @@ main (int argc, char* argv[])
   msim::Scheduler Sch;
   msim::SimTime  endTime (21);
   MyEvent  myEvent (msim::SimTime (10));
-  Sch.addEvent (&myEvent);
+  Sch.addEvent (myEvent);
   Sch.runUntil (endTime);
   return 0;
 }

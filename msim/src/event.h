@@ -43,7 +43,8 @@ class Event {
 
   void setTime(SimTime when);
 
-  virtual void happen() = 0;
+  virtual void    happen() = 0;
+  virtual Event  *copy () const = 0;
 
   SimTime  time() const { return dueTime; }
 

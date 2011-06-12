@@ -60,13 +60,26 @@ void
 Scheduler::step ()
 {
   cout << __PRETTY_FUNCTION__ << endl;
-  currentTime +=1;
+  EventList::iterator it;
+  SimTime nextTick (currentTime);
+  nextTick.advance ();
+  for (it = eventList.lower_bound (currentTime);
+       it != eventList.end () && it->first < nextTick;
+       it++) {
+    Event* event = it->second;
+    if (event) {
+      event->happen ();
+      delete event;
+    }
+  }
+  currentTime.advance();
   cout << "              " << currentTime << endl;
 }
 
 void
-Scheduler::addEvent (Event * pEvent)
+Scheduler::addEvent (const Event & evt)
 {
+  Event * pEvent = evt.copy ();
   eventList.insert (Event::ListPair (pEvent->time(), pEvent));
 }
 
