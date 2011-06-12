@@ -64,4 +64,10 @@ Scheduler::step ()
   cout << "              " << currentTime << endl;
 }
 
+void
+Scheduler::addEvent (Event * pEvent)
+{
+  eventList.insert (Event::ListPair (pEvent->time(), pEvent));
+}
+
 } // namespace

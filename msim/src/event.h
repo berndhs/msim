@@ -26,6 +26,7 @@
 using namespace std;
 
 #include "simtime.h"
+#include <map>
 
 namespace msim {
 // an Event consists of a time (when it happens)
@@ -44,15 +45,30 @@ class Event {
 
   virtual void happen() = 0;
 
-  SimTime  time() { return dueTime; }
+  SimTime  time() const { return dueTime; }
 
-  virtual void dump (ostream& out);
+  struct timeless {
+    bool operator() (const SimTime t1, const SimTime t2) 
+      const {
+      return t1 < t2 ;
+    }
+  };
 
- protected:
+  typedef std::pair<SimTime, Event*> ListPair;
+
+protected:
 
   SimTime    dueTime;
 
+friend ostream & operator<< (ostream & ost, const Event & evt);
+
 };
+
+ostream & 
+operator<< (ostream & ost, const Event & evt);
+
+
+typedef std::multimap <SimTime, Event*, Event::timeless>  EventList;
 
 } // namespace msim
 #endif

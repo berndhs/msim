@@ -49,11 +49,10 @@ Event::setTime (SimTime when)
   dueTime = when;
 }
 
-void
-Event::dump (ostream& out)
+ostream &
+operator<< (ostream & ost, const Event & evt)
 {
-  out << "event " << this << " at " ;
-  dueTime.dump(out);
-  out << endl;
+  ost << "event " << &evt << " at " << evt.time();
+  return ost;
 }
 

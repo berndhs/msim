@@ -25,8 +25,6 @@
 
 using namespace std;
 
-#include <map>
-
 #include "simtime.h"
 #include "event.h"
 
@@ -40,23 +38,17 @@ public:
   void run ();
   void runUntil (const SimTime & endTime);
 
+  void addEvent (Event * pEvent);
+
   SimTime simTime () const;
 
 private:
 
-  struct timeless {
-    bool operator() (const SimTime t1, const SimTime t2) 
-      const {
-      return t1 < t2 ;
-    }
-  };
-
-
-  typedef multimap <SimTime, Event *, timeless>  EventList;
-
   void step ();
 
-  SimTime   currentTime;
+  SimTime      currentTime;
+
+  EventList    eventList;
 
 
 };
