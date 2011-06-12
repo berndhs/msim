@@ -39,17 +39,19 @@ public:
   void runUntil (const SimTime & endTime);
 
   void schedule (const Event & evt, const SimTime & when);
-  SimTime dueTime (int eventId);
-  
+ 
   SimTime simTime () const;
+  SimTime lastEventTime () const;
+  SimTime dueTime (int eventId) const;
 
 private:
 
   typedef map <int, SimTime>  EventTimeMap;
 
-  void step ();
+  void removePastEvents (const SimTime & lowerBound);
 
   SimTime                currentTime;
+  SimTime                lastHappenTime;
 
   EventList              eventList;
   EventTimeMap           eventTimes;

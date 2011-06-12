@@ -48,7 +48,7 @@ distclean:
 	rm $(MAKEFILE)
 
 $(TARGET): $(BIN_DIR) $(OBJ_DIR) $(OBJ) 
-	$(CXX) $(CXX_CFLAGS) $(CXX_LDFLAGS) $(OBJ) -o $(TARGET) $(EXTRA_LIB)
+	$(CXX) $(CXX_CFLAGS) $(OBJ) -o $(TARGET) $(EXTRA_LIB) $(CXX_LDFLAGS)
 
 install: all FORCE
 	install -d $(DESTDIR)

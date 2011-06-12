@@ -80,6 +80,9 @@ class EventList : public TimedEventMap
 public:
 
   void erase (const SimTime & when, const Event * event);    
+  void erase (EventList::iterator first, EventList::iterator last) {
+    TimedEventMap::erase (first, last);
+  }
 };
 
 } // namespace msim

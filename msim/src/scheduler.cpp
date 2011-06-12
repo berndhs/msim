@@ -29,9 +29,10 @@ namespace msim
 {
 
 Scheduler::Scheduler ()
-  :currentTime (1)
+  :currentTime (1),
+   lastHappenTime (SimTime::tooEarly())
 {
-  cout << __PRETTY_FUNCTION__ << " allocated " << endl;
+  cerr << __PRETTY_FUNCTION__ << " allocated " << endl;
 }
 
 SimTime
@@ -41,9 +42,15 @@ Scheduler::simTime () const
 }
 
 SimTime
-Scheduler::dueTime (int eventId)
+Scheduler::lastEventTime () const
 {
-  EventTimeMap::iterator it = eventTimes.find (eventId);
+  return lastHappenTime;
+}
+
+SimTime
+Scheduler::dueTime (int eventId) const
+{
+  EventTimeMap::const_iterator it = eventTimes.find (eventId);
   if (it == eventTimes.end()) {
     return SimTime::tooLate();
   } else {
@@ -54,44 +61,67 @@ Scheduler::dueTime (int eventId)
 void
 Scheduler::run ()
 {
-  cout << __PRETTY_FUNCTION__ << " running " << endl;
-  cout << "                " << currentTime << endl;
-  step ();
+  cerr << __PRETTY_FUNCTION__ << " running " << endl;
+  cerr << "                " << currentTime << endl;
+  runUntil (SimTime::tooLate());
 }
 
 void
 Scheduler::runUntil (const SimTime & endTime)
 {
+  cerr << __PRETTY_FUNCTION__
+       << " until " << endTime 
+       << " starting at " << currentTime << endl;
   do {
-   step ();
-  } while (currentTime < endTime);
+    EventList::iterator it;
+    it = eventList.lower_bound (currentTime);
+    while (it != eventList.end () && it->first <= endTime) {
+      Event* event = it->second;
+      if (event) {
+        currentTime = eventTimes[event->id()];
+        eventList.erase (currentTime, event);
+        eventTimes.erase (event->id());
+        event->happen ();
+        lastHappenTime = currentTime;
+        delete event;
+        it = eventList.lower_bound (currentTime);
+      } else {
+        it++;
+      }
+    }
+  } while (currentTime < endTime && !eventList.empty());
+  currentTime = endTime;
+  removePastEvents (currentTime);
+  cerr << __PRETTY_FUNCTION__ << " done at time " << currentTime << endl;
 }
 
+
 void
-Scheduler::step ()
+Scheduler::removePastEvents (const SimTime & upperLimit)
 {
-  cout << __PRETTY_FUNCTION__ << endl;
-  EventList::iterator it;
-  SimTime nextTick (currentTime);
-  nextTick.advance ();
-  for (it = eventList.lower_bound (currentTime);
-       it != eventList.end () && it->first < nextTick;
-       it++) {
-    Event* event = it->second;
-    eventList.erase (currentTime, event);
-    if (event) {
-      eventTimes.erase (event->id());
-      event->happen ();
-      delete event;
+  cerr << __PRETTY_FUNCTION__ << " until " << upperLimit << endl;
+  SimTime firstBadTime (upperLimit);
+  firstBadTime.advance ();
+  EventList::iterator lastToRemove = eventList.upper_bound (firstBadTime);
+  if (lastToRemove != eventList.end()) {
+    for (EventList::iterator chase = eventList.begin();
+         chase != lastToRemove;
+         chase++) {
+      if (chase->second) {
+        delete chase->second;
+      }
     }
+    eventList.erase (eventList.begin(), lastToRemove);
   }
-  currentTime.advance();
-  cout << "              " << currentTime << endl;
 }
 
 void
 Scheduler::schedule (const Event & evt, const SimTime & when)
 {
+  cerr << __PRETTY_FUNCTION__ ;
+  cerr << " event " << evt.id() ;
+  cerr << " at " << when;
+  cerr << endl;
   Event * pEvent = evt.copy ();
   pEvent->scheduler = this;
   EventTimeMap::iterator eit = eventTimes.find (pEvent->id());

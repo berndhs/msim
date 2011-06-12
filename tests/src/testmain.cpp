@@ -29,7 +29,7 @@ MyEvent::copy () const
 void
 MyEvent::happen ()
 {
-  cout << __PRETTY_FUNCTION__ << " is was time at " 
+  cerr << __PRETTY_FUNCTION__ << " is was time at " 
        << scheduler()->simTime()
        << " next is " << when() 
        << endl;
@@ -43,5 +43,6 @@ main (int argc, char* argv[])
   MyEvent  myEvent (&Sch);
   Sch.schedule (myEvent, msim::SimTime (10));
   Sch.runUntil (endTime);
+  cerr << " time of last event " << Sch.lastEventTime() << endl;
   return 0;
 }
