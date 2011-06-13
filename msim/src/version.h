@@ -10,7 +10,9 @@ namespace msim
 #define MSIM_VERSION_MINOR 3
 #define MSIM_VERSION_PATCH 1
 
-#define MSIM_VERSION (((MSIM_VERSION_MAJOR)*10000) + ((MSIM_VERSION_MINOR)*100) + (MSIM_VERSION_PATCH))
+#define MSIM_VERSION (((MSIM_VERSION_MAJOR)*10000) \
+                     + ((MSIM_VERSION_MINOR)*100) \
+                     + (MSIM_VERSION_PATCH))
 
 class Version
 {

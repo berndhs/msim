@@ -56,7 +56,6 @@ private:
   EventList              eventList;
   EventTimeMap           eventTimes;
 
-
 };
 
 } // namespace
