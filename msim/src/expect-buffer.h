@@ -10,13 +10,6 @@ using namespace deliberate;
 namespace msim
 {
 
-class DataSlot 
-{
-public:
-
-  Property <TaggedData*>    data;
-  Property <bool>           empty;
-};
 
 class ExpectBuffer  // a set of data slots with tags of what to expect
 {
@@ -25,13 +18,30 @@ public:
 
   ExpectBuffer (int nSlots);
 
-  DataSlot & slot (int index);
- 
-  bool wantsData (const DataTagType & tag);
-  void expectData (const DataTagType & tag);
-  void consumeData (int index, TaggedData * data);
+
+  /// \brief false if not expecting data of this tag 
+  bool  isExpectingData (DataTagType tag);
+
+  /// \brief false if no empty slots, so will not be expecting
+  bool  expectData (DataTagType tag);
+
+  /// \brief false if not expecting data of this tag
+  bool  dataToBuffer (TaggedDataPtr pData);
+
+  /// \brief false if no matching data available
+  bool  consumeData  (DataTagType tag, TaggedDataPtr pData);
 
 private:
+
+  class DataSlot 
+  {
+  public:
+
+    DataSlot ();
+
+    TaggedDataPtr  data;
+    bool           empty;
+  };
 
   std::vector<DataSlot>    slots;
   int                      numSlots;

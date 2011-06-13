@@ -36,6 +36,7 @@ template <typename T>
 
      const T& operator() () const    { return data; }
      void     set (const T & value)  { data = value; }
+     const T& operator= (const T & value) { data = value; return data; }
   private:
     T  data;
   };

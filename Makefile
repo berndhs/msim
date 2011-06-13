@@ -4,24 +4,24 @@ TESTSDIR = tests
 all: lib test
 
 lib:
-	cd $(LIBSDIR); make  all
+	cd $(LIBSDIR); $(MAKE)  all
 
 test:
-	cd $(TESTSDIR); make all
+	cd $(TESTSDIR); $(MAKE) all
 
 clean:
-	cd $(LIBSDIR); make clean
-	cd $(TESTSDIR); make clean
+	cd $(LIBSDIR); $(MAKE) clean
+	cd $(TESTSDIR); $(MAKE) clean
 
 printversion: lib print_msim_version.cpp
 	$(CXX) print_msim_version.cpp -o print_msim_version -lmsim -Lmsim/bin
 	./print_msim_version
 
 cleanlibs:
-	cd $(LIBSDIR); make clean
+	cd $(LIBSDIR); $(MAKE) clean
 
 cleantests:
-	cd tests; make clean
+	cd tests; $(MAKE) clean
 
 
 
