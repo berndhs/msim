@@ -7,11 +7,15 @@ using namespace deliberate;
 
 namespace msim
 {
+
+typedef int DataTagTpe;
+
 class TaggedData
 {
 public:
 
-  Property <int>  tag;
+
+  Property <DataTagType>  tag;
 
 };
 

@@ -26,6 +26,10 @@ public:
   ExpectBuffer (int nSlots);
 
   DataSlot & slot (int index);
+ 
+  bool wantsData (const DataTagType & tag);
+  void expectData (const DataTagType & tag);
+  void consumeData (int index, TaggedData * data);
 
 private:
 
