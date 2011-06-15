@@ -63,8 +63,7 @@ Scheduler::dueTime (int eventId) const
 void
 Scheduler::run ()
 {
-  MS_TRACE  << " running " << endl;
-  MS_TRACE << "                " << currentTime << endl;
+  MS_TRACE ;
   runUntil (SimTime::tooLate());
 }
 
@@ -103,7 +102,6 @@ Scheduler::removePastEvents (const SimTime & upperLimit)
 {
   MS_TRACE  << " until " << upperLimit << endl;
   SimTime firstBadTime (upperLimit + 1);
-  MS_TRACE << "    keep all from time " << firstBadTime << endl;
   EventList::iterator lastToRemove = eventList.upper_bound (firstBadTime);
   if (lastToRemove != eventList.end()) {
     MS_TRACE << "   found some to remove " << endl;
@@ -122,9 +120,8 @@ Scheduler::removePastEvents (const SimTime & upperLimit)
 void
 Scheduler::schedule (const Event & evt, const SimTime & when)
 {
-  MS_TRACE << " event " << evt.id() ;
-  MS_TRACE << " at " << when;
-  MS_TRACE << endl;
+  MS_TRACE << endl << "  event " << evt.id() << endl;
+  MS_TRACE << endl << "        at " << when << endl;
   Event * pEvent = evt.copy ();
   pEvent->scheduler = this;
   EventTimeMap::iterator eit = eventTimes.find (pEvent->id());
@@ -133,15 +130,11 @@ Scheduler::schedule (const Event & evt, const SimTime & when)
          << pEvent->id() << " at " << eit->second
          << endl;
     eventList.erase (eit->second, pEvent->id());
-  } else {
-    MS_TRACE << "  event new to schedule " << pEvent->id() << endl;
   }
   eventList.insert (Event::ListPair (when, pEvent));
   eventTimes[pEvent->id()] = when;
-  MS_TRACE << "     event " << pEvent->id() 
+  MS_TRACE << " done " << endl << "     event " << pEvent->id() 
        << " now scheduled at " << pEvent->when() << endl;
-  MS_TRACE << "   total events list " << eventList.size () << " times " 
-       << eventTimes.size () << endl;
 }
 
 } // namespace
