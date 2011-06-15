@@ -38,7 +38,8 @@ class SimpleTaggedData
 public:
 
   enum SpecialTags {
-    Invalid = -1
+    Invalid = -1,
+    MinDynamic = 0x1000000
   };
 
   SimpleTaggedData (DataTagType tagValue = Invalid);
@@ -46,12 +47,11 @@ public:
 
   Property <DataTagType>  tag;
 
-  virtual bool         valid ();
+  bool         valid ();
 
   static DataTagType   genTag ();
 
   static bool validTag (DataTagType tag);
-  static SimpleTaggedData *  alloc ();
 
 private:
 

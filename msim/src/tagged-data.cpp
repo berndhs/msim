@@ -26,7 +26,7 @@
 namespace msim
 {
 
-DataTagType   SimpleTaggedData::currentTag (256);
+DataTagType   SimpleTaggedData::currentTag (MinDynamic);
 
 SimpleTaggedData::SimpleTaggedData (DataTagType tagValue)
   :tag (tagValue)
@@ -37,11 +37,6 @@ SimpleTaggedData::SimpleTaggedData (const SimpleTaggedData & other)
   :tag (other.tag)
 {}
 
-SimpleTaggedData *
-SimpleTaggedData::alloc ()
-{
-  return new SimpleTaggedData();
-}
 
 bool
 SimpleTaggedData::valid ()
@@ -60,7 +55,7 @@ SimpleTaggedData::genTag ()
 {
   currentTag++;
   if (currentTag <= 0) {
-    currentTag = 256;
+    currentTag = MinDynamic;
   }
   return currentTag;
 }
