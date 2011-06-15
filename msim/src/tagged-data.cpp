@@ -14,6 +14,12 @@ SimpleTaggedData::SimpleTaggedData (const SimpleTaggedData & other)
   :tag (other.tag)
 {}
 
+SimpleTaggedData *
+SimpleTaggedData::alloc ()
+{
+  return new SimpleTaggedData();
+}
+
 bool
 SimpleTaggedData::valid ()
 {

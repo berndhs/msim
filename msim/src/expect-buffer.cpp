@@ -1,5 +1,5 @@
 #include "expect-buffer.h"
-
+#include "debug-log.h"
 
 namespace msim
 {
@@ -8,12 +8,19 @@ ExpectBuffer::DataSlot::DataSlot ()
   :data (new SimpleTaggedData()),
    empty (true)
 {
+  MS_TRACE << " allocated slot at " << this << std::endl;
 }
 
 ExpectBuffer::ExpectBuffer (int nSlots)
-  :slots (nSlots, DataSlot()),
+  :slots (0),
    numSlots (nSlots)
 {
+  slots = new DataSlot[nSlots];
+}
+
+ExpectBuffer::~ExpectBuffer ()
+{
+  delete[] slots;
 }
 
 bool
@@ -34,8 +41,13 @@ ExpectBuffer::expectData (DataTagType tag)
     return false;   // won't expect invalid data
   }
   for (int s=0; s<numSlots; s++) {
+MS_TRACE << " slot " << s << " " 
+         << slots[s].data << " empty " << slots[s].empty
+         << " tag " << slots[s].data->tag() 
+         << std::endl;
     if (slots[s].empty && !slots[s].data->valid()) {
       slots[s].data->tag.set(tag);
+MS_TRACE << " using slot " << s << std::endl;
       return true;
     }
   }
@@ -68,6 +80,35 @@ ExpectBuffer::consumeData (DataTagType tag, SimpleTaggedDataPtr pData)
     }
   }
   return false;
+}
+
+int
+ExpectBuffer::fullCount ()
+{
+  int count (0);
+  for (int s=0; s<numSlots; s++) {
+    if (!slots[s].empty) {
+      count++;
+    }
+  }
+  return count;
+}
+
+int
+ExpectBuffer::expectCount (DataTagType tagValue)
+{
+  int count (0);
+  for (int s=0; s<numSlots; s++) {
+MS_TRACE << " slot " << s << " " 
+         << slots[s].data << " empty " << slots[s].empty
+         << " tag " << slots[s].data->tag() 
+         << std::endl;
+    if (slots[s].empty && slots[s].data->tag() == tagValue) {
+MS_TRACE << " count slot " << s << std::endl;
+      count++;
+    }
+  }
+  return count;
 }
 
 } // namespace

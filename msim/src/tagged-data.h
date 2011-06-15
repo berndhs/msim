@@ -28,6 +28,7 @@ public:
   static DataTagType   genTag ();
 
   static bool validTag (DataTagType tag);
+  static SimpleTaggedData *  alloc ();
 
 private:
 

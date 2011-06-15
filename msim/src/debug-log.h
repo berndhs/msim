@@ -15,7 +15,7 @@ class DebugLog
 {
 public:
  
-static ostream & Debug() { return std::cerr; }
+static std::ostream & Debug() { return std::cerr; }
 
 };
 

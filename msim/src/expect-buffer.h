@@ -3,7 +3,6 @@
 
 #include "deliberate.h"
 #include "tagged-data.h"
-#include <vector>
 
 using namespace deliberate;
 
@@ -16,7 +15,8 @@ class ExpectBuffer  // a set of data slots with tags of what to expect
 
 public:
 
-  ExpectBuffer (int nSlots);
+  ExpectBuffer (int nSlots=1);
+  ~ExpectBuffer ();
 
 
   /// \brief false if not expecting data of this tag 
@@ -31,6 +31,10 @@ public:
   /// \brief false if no matching data available
   bool  consumeData  (DataTagType tag, SimpleTaggedDataPtr pData);
 
+  int   fullCount ();
+  int   expectCount (DataTagType tagValue);
+  int   capacity () { return numSlots; }
+
 private:
 
   class DataSlot 
@@ -40,11 +44,11 @@ private:
     DataSlot ();
 
     SimpleTaggedDataPtr  data;
-    bool           empty;
+    bool                 empty;
   };
 
-  std::vector<DataSlot>    slots;
-  int                      numSlots;
+  DataSlot *    slots;
+  int           numSlots;
 };
 
 } // namespace
