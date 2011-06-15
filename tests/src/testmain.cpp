@@ -3,6 +3,7 @@
 #include <scheduler.h>
 #include <event.h>
 #include <version.h>
+#include <tagged-data.h>
 
 using namespace std;
 
@@ -41,7 +42,21 @@ int
 main (int argc, char* argv[])
 {
 
-  cout << " using msim version " << msim::Version::version << endl;;
+  cout << " using msim version " << msim::Version::version << endl;
+
+  msim::TaggedData <std::string> myData;
+
+  cout << " my data default tag " << myData.tag() 
+       << " data " << myData.payload() << endl;
+
+  myData.tag = msim::SimpleTaggedData::genTag ();
+  myData.payload = std::string ("hello world 1");
+  cout << " my data default loaded " << myData.tag() 
+       << " data " << myData.payload() << endl;
+  myData.payload.set (std::string ("hello world 2"));
+  cout << " my data default loaded " << myData.tag() 
+       << " data " << myData.payload() << endl;
+
   msim::Scheduler Sch;
   msim::SimTime  endTime (21);
   MyEvent  ev1 (&Sch);

@@ -5,7 +5,7 @@ namespace msim
 {
 
 ExpectBuffer::DataSlot::DataSlot ()
-  :data (new TaggedData()),
+  :data (new SimpleTaggedData()),
    empty (true)
 {
 }
@@ -30,7 +30,7 @@ ExpectBuffer::isExpectingData (DataTagType tag)
 bool
 ExpectBuffer::expectData (DataTagType tag)
 {
-  if (!TaggedData::validTag (tag)) {
+  if (!SimpleTaggedData::validTag (tag)) {
     return false;   // won't expect invalid data
   }
   for (int s=0; s<numSlots; s++) {
@@ -43,7 +43,7 @@ ExpectBuffer::expectData (DataTagType tag)
 }
 
 bool
-ExpectBuffer::dataToBuffer (TaggedDataPtr pData)
+ExpectBuffer::dataToBuffer (SimpleTaggedDataPtr pData)
 {
   DataTagType tag = pData->tag();
   for (int s=0; s<numSlots; s++) {
@@ -57,13 +57,13 @@ ExpectBuffer::dataToBuffer (TaggedDataPtr pData)
 }
 
 bool
-ExpectBuffer::consumeData (DataTagType tag, TaggedDataPtr pData)
+ExpectBuffer::consumeData (DataTagType tag, SimpleTaggedDataPtr pData)
 {
   for (int s=0; s<numSlots; s++) {
     if (!slots[s].empty && slots[s].data->tag() == tag) {
       pData = slots[s].data;
       slots[s].empty = true;
-      slots[s].data->tag.set(TaggedData::invalid);
+      slots[s].data->tag.set(SimpleTaggedData::Invalid);
       return true;
     }
   }

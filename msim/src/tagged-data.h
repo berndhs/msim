@@ -2,7 +2,6 @@
 #define MSIM_TAGGED_DATA_H
 
 #include "deliberate.h"
-#include <boost/shared_ptr.hpp>
 
 using namespace deliberate;
 
@@ -11,19 +10,22 @@ namespace msim
 
 typedef long long int DataTagType;
 
-class TaggedData
+class SimpleTaggedData
 {
 public:
 
-  TaggedData ();
+  enum SpecialTags {
+    Invalid = -1
+  };
+
+  SimpleTaggedData (DataTagType tagValue = Invalid);
+  SimpleTaggedData (const SimpleTaggedData & other);
 
   Property <DataTagType>  tag;
 
   virtual bool         valid ();
 
   static DataTagType   genTag ();
-
-  static const DataTagType   invalid;
 
   static bool validTag (DataTagType tag);
 
@@ -33,7 +35,26 @@ private:
 
 };
 
-typedef TaggedData*  TaggedDataPtr;
+typedef SimpleTaggedData*  SimpleTaggedDataPtr;
+
+template <typename PayloadType>
+class TaggedData : public SimpleTaggedData
+{
+public:
+
+  TaggedData<PayloadType> (const TaggedData<PayloadType> & other)
+    :SimpleTaggedData (other),
+     payload (other.payload())
+  {}
+
+  TaggedData<PayloadType> (DataTagType tagValue = SimpleTaggedData::Invalid,
+                           const PayloadType & data = PayloadType())
+    :SimpleTaggedData (tagValue),
+     payload (data)
+  {}
+
+  Property <PayloadType> payload;
+};
 
 } // namespace
 

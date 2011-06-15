@@ -3,29 +3,31 @@
 namespace msim
 {
 
-DataTagType   TaggedData::currentTag (256);
+DataTagType   SimpleTaggedData::currentTag (256);
 
-const DataTagType   TaggedData::invalid (-1);
-
-TaggedData::TaggedData ()
-  :tag (-1)
+SimpleTaggedData::SimpleTaggedData (DataTagType tagValue)
+  :tag (tagValue)
 {
 }
 
+SimpleTaggedData::SimpleTaggedData (const SimpleTaggedData & other)
+  :tag (other.tag)
+{}
+
 bool
-TaggedData::valid ()
+SimpleTaggedData::valid ()
 {
   return tag() > 0;
 }
 
 bool
-TaggedData::validTag (DataTagType tagValue)
+SimpleTaggedData::validTag (DataTagType tagValue)
 {
   return tagValue > 0;
 }
 
 DataTagType
-TaggedData::genTag ()
+SimpleTaggedData::genTag ()
 {
   currentTag++;
   if (currentTag <= 0) {

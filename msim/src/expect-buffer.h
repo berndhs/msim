@@ -26,10 +26,10 @@ public:
   bool  expectData (DataTagType tag);
 
   /// \brief false if not expecting data of this tag
-  bool  dataToBuffer (TaggedDataPtr pData);
+  bool  dataToBuffer (SimpleTaggedDataPtr pData);
 
   /// \brief false if no matching data available
-  bool  consumeData  (DataTagType tag, TaggedDataPtr pData);
+  bool  consumeData  (DataTagType tag, SimpleTaggedDataPtr pData);
 
 private:
 
@@ -39,7 +39,7 @@ private:
 
     DataSlot ();
 
-    TaggedDataPtr  data;
+    SimpleTaggedDataPtr  data;
     bool           empty;
   };
 
