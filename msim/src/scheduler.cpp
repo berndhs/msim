@@ -1,6 +1,8 @@
 #include "scheduler.h"
 #include <iostream>
 
+#include "debug-log.h"
+
 
 /****************************************************************
  * This file is distributed under the following license:
@@ -32,7 +34,7 @@ Scheduler::Scheduler ()
   :currentTime (1),
    lastHappenTime (SimTime::tooEarly())
 {
-  cerr << __PRETTY_FUNCTION__ << " allocated " << endl;
+  MS_TRACE  << " allocated " << endl;
 }
 
 SimTime
@@ -61,15 +63,15 @@ Scheduler::dueTime (int eventId) const
 void
 Scheduler::run ()
 {
-  cerr << __PRETTY_FUNCTION__ << " running " << endl;
-  cerr << "                " << currentTime << endl;
+  MS_TRACE  << " running " << endl;
+  MS_TRACE << "                " << currentTime << endl;
   runUntil (SimTime::tooLate());
 }
 
 void
 Scheduler::runUntil (const SimTime & endTime)
 {
-  cerr << __PRETTY_FUNCTION__
+  MS_TRACE 
        << " until " << endTime 
        << " starting at " << currentTime << endl;
   do {
@@ -92,23 +94,23 @@ Scheduler::runUntil (const SimTime & endTime)
   } while (currentTime < endTime && !eventList.empty());
   currentTime = endTime;
   removePastEvents (currentTime);
-  cerr << __PRETTY_FUNCTION__ << " done at time " << currentTime << endl;
+  MS_TRACE  << " done at time " << currentTime << endl;
 }
 
 
 void
 Scheduler::removePastEvents (const SimTime & upperLimit)
 {
-  cerr << __PRETTY_FUNCTION__ << " until " << upperLimit << endl;
+  MS_TRACE  << " until " << upperLimit << endl;
   SimTime firstBadTime (upperLimit + 1);
-  cerr << "    keep all from time " << firstBadTime << endl;
+  MS_TRACE << "    keep all from time " << firstBadTime << endl;
   EventList::iterator lastToRemove = eventList.upper_bound (firstBadTime);
   if (lastToRemove != eventList.end()) {
-    cerr << "   found some to remove " << endl;
+    MS_TRACE << "   found some to remove " << endl;
     for (EventList::iterator chase = eventList.begin();
          chase != lastToRemove;
          chase++) {
-      cerr << "    try to remove " << chase->second << endl;
+      MS_TRACE << "    try to remove " << chase->second << endl;
       if (chase->second) {
         delete chase->second;
       }
@@ -120,26 +122,25 @@ Scheduler::removePastEvents (const SimTime & upperLimit)
 void
 Scheduler::schedule (const Event & evt, const SimTime & when)
 {
-  cerr << __PRETTY_FUNCTION__ ;
-  cerr << " event " << evt.id() ;
-  cerr << " at " << when;
-  cerr << endl;
+  MS_TRACE << " event " << evt.id() ;
+  MS_TRACE << " at " << when;
+  MS_TRACE << endl;
   Event * pEvent = evt.copy ();
   pEvent->scheduler = this;
   EventTimeMap::iterator eit = eventTimes.find (pEvent->id());
   if (eit != eventTimes.end()) {
-    cerr << "   event already scheduled, removeing old one "
+    MS_TRACE << "   event already scheduled, removeing old one "
          << pEvent->id() << " at " << eit->second
          << endl;
     eventList.erase (eit->second, pEvent->id());
   } else {
-    cerr << "  event new to schedule " << pEvent->id() << endl;
+    MS_TRACE << "  event new to schedule " << pEvent->id() << endl;
   }
   eventList.insert (Event::ListPair (when, pEvent));
   eventTimes[pEvent->id()] = when;
-  cerr << "     event " << pEvent->id() 
+  MS_TRACE << "     event " << pEvent->id() 
        << " now scheduled at " << pEvent->when() << endl;
-  cerr << "   total events list " << eventList.size () << " times " 
+  MS_TRACE << "   total events list " << eventList.size () << " times " 
        << eventTimes.size () << endl;
 }
 

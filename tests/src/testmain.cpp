@@ -4,6 +4,7 @@
 #include <event.h>
 #include <version.h>
 #include <tagged-data.h>
+#include <debug-log.h>
 
 using namespace std;
 
@@ -31,7 +32,7 @@ MyEvent::copy () const
 void
 MyEvent::happen ()
 {
-  cerr << __PRETTY_FUNCTION__ << " time "
+  MS_LOG << __PRETTY_FUNCTION__ << " time "
        << " for " << id() 
        << " at " << scheduler()->simTime()
        << " next is " << when() 
@@ -41,6 +42,7 @@ MyEvent::happen ()
 int
 main (int argc, char* argv[])
 {
+ {
 
   cout << " using msim version " << msim::Version::version << endl;
 
@@ -71,6 +73,8 @@ main (int argc, char* argv[])
   Sch.schedule (ev1, msim::SimTime (17)); // should replace the earlier one
 
   Sch.runUntil (endTime);
-  cerr << " time of last event " << Sch.lastEventTime() << endl;
-  return 0;
+  MS_TRACE << " time of last event " << Sch.lastEventTime() << endl;
+ }
+  MS_LOG << " exiting " << endl;
+ return 0;
 }
