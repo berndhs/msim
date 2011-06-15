@@ -79,7 +79,7 @@ MS_TRACE << " using slot " << s << std::endl;
 }
 
 bool
-ExpectBuffer::dataToBuffer (SimpleTaggedDataPtr pData)
+ExpectBuffer::writeToBuffer (SimpleTaggedDataPtr pData)
 {
   DataTagType tag = pData->tag();
   for (int s=0; s<numSlots; s++) {

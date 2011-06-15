@@ -78,7 +78,7 @@ MyEvent::happen ()
            << endl;
   MS_TRACE << " data tag " << ddata->tag() 
            << " valid " << ddata->valid () << endl;
-  bool accept = buffer.dataToBuffer (ddata);
+  bool accept = buffer.writeToBuffer (ddata);
   MS_TRACE << " accepted " << accept << " data " << ddata->tag() << " "
            << ddata->payload () 
            << endl;
@@ -94,10 +94,10 @@ public:
     MS_TRACE << endl;
   }
 
-  bool dataToBuffer (msim::SimpleTaggedDataPtr  pData)
+  bool writeToBuffer (msim::SimpleTaggedDataPtr  pData)
   {
     MS_TRACE << endl;
-    bool ok = ExpectBuffer::dataToBuffer (pData);
+    bool ok = ExpectBuffer::writeToBuffer (pData);
     MS_TRACE << " adding data " << ok << endl;
     return ok;
   }

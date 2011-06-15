@@ -49,7 +49,7 @@ public:
   virtual bool  expectData (DataTagType tag);
 
   /// \brief false if not expecting data of this tag
-  virtual bool  dataToBuffer (SimpleTaggedDataPtr pData);
+  virtual bool  writeToBuffer (SimpleTaggedDataPtr pData);
 
   /// \brief false if no matching data available
   virtual bool  consumeData  (DataTagType tag, SimpleTaggedDataPtr pData);

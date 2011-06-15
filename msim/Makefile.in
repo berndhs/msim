@@ -35,10 +35,6 @@ PROJECT_NAME=msim
 MAKEFILE = Makefile
 TOP_MAKEFILE = Makefile
 TARGET = $(BIN_DIR)/lib${PROJECT_NAME}.so
-DESKTOP_FILE = ${PROJECT_NAME}.desktop
-DESKTOP_DIR = /usr/share/applications
-ICON_FILE = ${PROJECT_NAME}.png
-ICON_DIR = /usr/share/pixmaps
 
 include make.inc
 
@@ -71,12 +67,6 @@ $(TARGET): $(BIN_DIR) $(OBJ_DIR) $(OBJ)
 install: all FORCE
 	install -d $(DESTDIR)
 	install -m 0755 -p $(TARGET) $(DESTDIR)
-
-desktop: install
-	install -d $(DESKTOP_DIR)
-	install -m 0644 -p $(DESKTOP_FILE) $(DESKTOP_DIR)
-	install -d $(ICON_DIR)
-	install -m 0644 -p $(ICON_FILE) $(ICON_DIR)
 
 $(OBJ_DIR):
 	mkdir $(OBJ_DIR)

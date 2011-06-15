@@ -31,7 +31,11 @@ using namespace deliberate;
 namespace msim
 {
 
-typedef long long int DataTagType;
+/** \brief this library is not intended for systems that have trouble 
+  *   with 64 bit values
+  */
+
+typedef long long int DataTagType;  
 
 class SimpleTaggedData
 {
@@ -39,7 +43,8 @@ public:
 
   enum SpecialTags {
     Invalid = -1,
-    MinDynamic = 0x1000000
+    MinStatic = 1,
+    MinDynamic = (1 << 30)
   };
 
   SimpleTaggedData (DataTagType tagValue = Invalid);
