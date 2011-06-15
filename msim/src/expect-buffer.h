@@ -43,20 +43,20 @@ public:
 
 
   /// \brief false if not expecting data of this tag 
-  bool  isExpectingData (DataTagType tag);
+  virtual bool  isExpectingData (DataTagType tag);
 
   /// \brief false if no empty slots, so will not be expecting
-  bool  expectData (DataTagType tag);
+  virtual bool  expectData (DataTagType tag);
 
   /// \brief false if not expecting data of this tag
-  bool  dataToBuffer (SimpleTaggedDataPtr pData);
+  virtual bool  dataToBuffer (SimpleTaggedDataPtr pData);
 
   /// \brief false if no matching data available
-  bool  consumeData  (DataTagType tag, SimpleTaggedDataPtr pData);
+  virtual bool  consumeData  (DataTagType tag, SimpleTaggedDataPtr pData);
 
-  int   fullCount ();
-  int   expectCount (DataTagType tagValue);
-  int   capacity () { return numSlots; }
+  virtual int   fullCount ();
+  virtual int   expectCount (DataTagType tagValue);
+  virtual int   capacity () { return numSlots; }
 
 private:
 

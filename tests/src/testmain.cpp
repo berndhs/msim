@@ -84,6 +84,26 @@ MyEvent::happen ()
            << endl;
 }
 
+
+class MyBuf : public msim::ExpectBuffer {
+public:
+
+  MyBuf ()
+    :ExpectBuffer (2)
+  { 
+    MS_TRACE << endl;
+  }
+
+  bool dataToBuffer (msim::SimpleTaggedDataPtr  pData)
+  {
+    MS_TRACE << endl;
+    bool ok = ExpectBuffer::dataToBuffer (pData);
+    MS_TRACE << " adding data " << ok << endl;
+    return ok;
+  }
+
+};
+
 int
 main (int argc, char* argv[])
 {
@@ -91,25 +111,13 @@ main (int argc, char* argv[])
 
   cout << " using msim version " << msim::Version::version << endl;
 
-  msim::TaggedData <string> myData;
 
-  msim::ExpectBuffer  myBuf (2);
+  MyBuf  myBuf;
   MS_TRACE << " myBuf expect count(" << etag << ") " << myBuf.expectCount(etag)
            << endl;
   myBuf.expectData (msim::DataTagType (etag));
   MS_TRACE << " myBuf expect count(" << etag << ") " << myBuf.expectCount(etag)
            << endl;
-
-  cout << " my data default tag " << myData.tag() 
-       << " data " << myData.payload() << endl;
-
-  myData.tag = msim::SimpleTaggedData::genTag ();
-  myData.payload = string ("hello world 1");
-  cout << " my data default loaded " << myData.tag() 
-       << " data " << myData.payload() << endl;
-  myData.payload.set (string ("hello world 2"));
-  cout << " my data default loaded " << myData.tag() 
-       << " data " << myData.payload() << endl;
 
   msim::Scheduler Sch;
   msim::SimTime  endTime (21);
