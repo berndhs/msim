@@ -107,6 +107,10 @@ case $ac_option in
    PREFIX=$ac_optarg
    $ac_shift
    ;;
+  --libdir)
+   LIBDIR=$ac_optarg
+   $ac_shift
+   ;;
   --distro)
    DISTRO=$ac_optarg
    $ac_shift

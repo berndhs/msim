@@ -65,8 +65,8 @@ $(TARGET): $(BIN_DIR) $(OBJ_DIR) $(OBJ)
 	$(CXX) $(CXX_CFLAGS) $(CXX_LDFLAGS) $(OBJ) -o $(TARGET) 
 
 install: all FORCE
-	install -d $(DESTDIR)
-	install -m 0755 -p $(TARGET) $(DESTDIR)
+	install -d $(LIBDIR)
+	install -m 0755 -p $(TARGET) $(LIBDIR)
 
 $(OBJ_DIR):
 	mkdir $(OBJ_DIR)
