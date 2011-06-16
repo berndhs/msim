@@ -29,7 +29,7 @@
 #
 BUILD_DIR=.
 OBJ_DIR = $(BUILD_DIR)/obj
-SRC_DIR = src
+SRC_DIR = $(BUILD_DIR)/src
 BIN_DIR = $(BUILD_DIR)/bin
 
 PROJECT_NAME=msim
@@ -84,7 +84,7 @@ FORCE:
 
 
 make.dep: $(SRC) $(HDR)
-	$(CXX) -MM $(SRC) > make.dep.tmp
-	awk '{print "$(OBJ_DIR)/"$$0; }' make.dep.tmp > make.dep
+	echo "sources " $(SRC)
+	$(CXX) -MM $(SRC) | sed 's+[^\.]*\.o:+$(OBJ_DIR)/&+' > make.dep
 
 
