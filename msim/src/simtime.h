@@ -226,8 +226,9 @@ operator >= (const SimTimeT<TimeType>& t1,const SimTimeT<TimeType>& t2)
   return !(t1 < t2);
 }
 
+typeded long long int SimTickType;
 
-typedef SimTimeT<long long int> SimTime;
+typedef SimTimeT<SimTickType> SimTime;
 
 
 } // namespace msim
