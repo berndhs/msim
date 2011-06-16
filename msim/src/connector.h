@@ -6,6 +6,7 @@
 #include "tagged-data.h"
 
 #include <map>
+#include <set>
 
 namespace msim
 {
@@ -23,7 +24,7 @@ public:
        input (-1),
        output (-1)
     {}
-    DataPacket (SimTime rt, SimpleTaggedData *pD, int in, int out)
+    DataPacket (SimTime rt, SimpleTaggedDataPtr pD, int in, int out)
       :releaseTime (rt),
        data (pD),
        input (in),
@@ -36,10 +37,11 @@ public:
        output (other.output)
     {}
     SimTime              releaseTime;
-    SimpleTaggedData    *data;
+    SimpleTaggedDataPtr  data;
     int                  input;
     int                  output;
   };
+
 
   Connector (Scheduler * sched, int inputs=1, int outputs=1);
   ~Connector ();
@@ -51,22 +53,23 @@ public:
 
   /* data packet read/write functions */
 
-  virtual bool write (int input, SimpleTaggedData * data);
+  /** write: output = -1 broadcasts */
+  virtual bool write (int input, int output, SimpleTaggedData * data);
 
-  virtual SimTime  readAvailable  (int output);
-  virtual SimpleTaggedData * read (int output);
+  /** read returns null if not available at current sim time */
+  virtual SimpleTaggedDataPtr  read   (int output);
+  virtual SimTime  whenReadAvailable  (int output);
+  virtual bool     isReadAvailable    (int output);
 
   /* delay calculation facilities */
 
   typedef SimTickType (*DelayFunctionType) (Connector*, int, int);
 
-  virtual void        setDelay (int input, int output, 
-                                SimTickType delay);
   virtual SimTickType delay (int input, int output);
 
+  virtual void        setDelay (int input, int output, 
+                                SimTickType delay);
   void setDelayFunction (DelayFunctionType * function);
-
-  virtual SimTickType delay (Connector* context, int input, int output);
 
 private:
 
@@ -79,17 +82,25 @@ private:
 
   void setOutputDelay (int input, int output, SimTickType delay);
   
-  SimTickType        *delayMap[];
 
 
   /* Data Packet queueing stuff */
   
-  typedef std::deque <DataPacket>  PacketQueue;
-  typedef std::map <int, PacketQueue*>  PacketQueueMap;
+
+protected:
+
+  typedef std::multiset <DataPacket>  PacketQueue;
+  typedef std::map <int, PacketQueue>  PacketQueueMap;
+
+  SimTickType        **delayMap;
 
   PacketQueueMap    packetMap;
 
 };
+
+
+bool operator< (const Connector::DataPacket & left, 
+                const Connector::DataPacket & right);
 
 } // namespace
 
