@@ -159,7 +159,7 @@ echo "# Faux automake" >> Makefile
 echo "# ${COPYRIGHT}" >> Makefile
 echo "#" >> Makefile
 echo "PREFIX=${PREFIX}" >> Makefile
-echo "DESTDIR=\${PREFIX}/bin" >> Makefile
+echo "DESTDIR=\${PREFIX}" >> Makefile
 echo "LIBDIR=${LIBDIR}" >> Makefile
 echo "MAKE = ${MAKE_PROGRAM}" >> Makefile
 

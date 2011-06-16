@@ -66,7 +66,9 @@ $(TARGET): $(BIN_DIR) $(OBJ_DIR) $(OBJ)
 
 install: all FORCE
 	install -d $(DESTDIR)/$(LIBDIR)
+	install -d $(DESTDIR)/include/$(PROJECT_NAME)
 	install -m 0755 -p $(TARGET) $(DESTDIR)/$(LIBDIR)
+	install -m 0333 -p $(HDR) $(DESTDIR)/include/$(PROJECT_NAME)
 
 $(OBJ_DIR):
 	mkdir $(OBJ_DIR)
