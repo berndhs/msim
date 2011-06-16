@@ -23,7 +23,7 @@
  ****************************************************************/
 
 #include "simtime.h"
-#include "deliberate.h"
+#include "property.h"
 #include <map>
 
 using namespace std;

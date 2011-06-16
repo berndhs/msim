@@ -24,7 +24,7 @@
  ****************************************************************/
 
 
-#include "deliberate.h"
+#include "property.h"
 
 using namespace deliberate;
 
