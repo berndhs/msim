@@ -70,10 +70,10 @@ install: all FORCE
 	install -m 0755 -p $(TARGET) $(LIBDIR)
 
 $(OBJ_DIR):
-	mkdir $(OBJ_DIR)
+	mkdir -p $(OBJ_DIR)
 
 $(BIN_DIR):
-	mkdir $(BIN_DIR)
+	mkdir -p $(BIN_DIR)
 
 include make.dep
 
