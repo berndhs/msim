@@ -23,7 +23,7 @@ public:
 
   Property <Scheduler*> scheduler;
 
-  bool write (int input, SimpleTaggedData * data);
+  virtual bool write (int input, SimpleTaggedData * data);
 
   virtual SimTime  readAvailable  (int output);
   virtual SimpleTaggedData * read (int output);
