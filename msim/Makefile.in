@@ -27,7 +27,6 @@
 # *  Boston, MA  02110-1301, USA.
 # ****************************************************************/
 #
-BUILD_DIR=.
 OBJ_DIR = obj
 SRC_DIR = src
 BIN_DIR = bin
@@ -59,15 +58,15 @@ clean: FORCE
 	rm $(OBJ) $(TARGET)
 
 distclean:
-	make --always-make clean
+	$(MAKE) --always-make clean
 	rm $(MAKEFILE)
 
 $(TARGET): $(BIN_DIR) $(OBJ_DIR) $(OBJ) 
 	$(CXX) $(CXX_CFLAGS) $(CXX_LDFLAGS) $(OBJ) -o $(TARGET) 
 
 install: all FORCE
-	install -d $(LIBDIR)
-	install -m 0755 -p $(TARGET) $(LIBDIR)
+	install -d $(DESTDIR)/$(LIBDIR)
+	install -m 0755 -p $(TARGET) $(DESTDIR)/$(LIBDIR)
 
 $(OBJ_DIR):
 	mkdir $(OBJ_DIR)
