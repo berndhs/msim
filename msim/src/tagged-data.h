@@ -35,14 +35,14 @@ namespace msim
   *   with 64 bit values
   */
 
-typedef long long int DataTagType;  
+typedef unsigned long long int DataTagType;  
 
 class SimpleTaggedData
 {
 public:
 
   enum SpecialTags {
-    Invalid = -1,
+    Invalid = 0,
     MinStatic = 1,
     MinDynamic = (1 << 30)
   };

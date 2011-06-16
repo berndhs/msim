@@ -41,20 +41,20 @@ SimpleTaggedData::SimpleTaggedData (const SimpleTaggedData & other)
 bool
 SimpleTaggedData::valid ()
 {
-  return tag() > 0;
+  return tag() >= Invalid;
 }
 
 bool
 SimpleTaggedData::validTag (DataTagType tagValue)
 {
-  return tagValue > 0;
+  return tagValue >= Invalid;
 }
 
 DataTagType
 SimpleTaggedData::genTag ()
 {
   currentTag++;
-  if (currentTag <= 0) {
+  if (currentTag <= Invalid) {
     currentTag = MinDynamic;
   }
   return currentTag;
