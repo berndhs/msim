@@ -27,9 +27,10 @@
 # *  Boston, MA  02110-1301, USA.
 # ****************************************************************/
 #
-OBJ_DIR = obj
+BUILD_DIR=.
+OBJ_DIR = $(BUILD_DIR)/obj
 SRC_DIR = src
-BIN_DIR = bin
+BIN_DIR = $(BUILD_DIR)/bin
 
 PROJECT_NAME=msim
 MAKEFILE = Makefile
