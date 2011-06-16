@@ -15,12 +15,18 @@ Connector::Connector (Scheduler * sched,
       delayMap[i][j] = 1;
     }
   }
+  for (int k=0; k<numOutputs; k++) {
+    packetMap = new PacketQueue;
+  }
 }
 
 Connector::~Connector ()
 {
   for (int i=0; i<numInputs; i++) {
     delete[] delayMap[i];
+  }
+  for (int k=0; k<numOutputs; k++) {
+    delete packetMap[k];
   }
 }
 
