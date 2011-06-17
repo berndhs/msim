@@ -69,7 +69,7 @@ install: all FORCE
 	install -d $(DESTDIR)/$(LIBDIR)
 	install -d $(DESTDIR)/$(PREFIX)/include/$(PROJECT_NAME)
 	install -m 0755 -p $(TARGET) $(DESTDIR)/$(LIBDIR)
-	install -m 0644 -p $(HDR) $(DESTDIR)/include/$(PROJECT_NAME)
+	install -m 0644 -p $(HDR) $(DESTDIR)/$(PREFIX)/include/$(PROJECT_NAME)
 
 $(OBJ_DIR):
 	mkdir $(OBJ_DIR)
