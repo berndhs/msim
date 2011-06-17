@@ -136,7 +136,18 @@ ReadEvent::happen ()
   if (connector == 0) {
     return;
   }
-  MS_TRACE << " available " << connector->isReadAvailable (1);
+  MS_TRACE << " available " << connector->isReadAvailable (1) << endl;
+  MS_TRACE << "    available time (0) " 
+           << connector->whenReadAvailable (0) << endl;
+  MS_TRACE << "    available time (1) " 
+           << connector->whenReadAvailable (1) << endl;
+  if (connector->isReadAvailable (1)) {
+    msim::SimpleTaggedDataPtr pD = connector->read (1);
+    MS_TRACE << "  got data " << hex << pD << endl;
+    MS_TRACE << "  now available " << connector->isReadAvailable (1) << endl;
+    MS_TRACE << "    now available time (1) " 
+           << connector->whenReadAvailable (1) << endl;
+  }
 }
 
 
@@ -149,11 +160,15 @@ testConnector ()
   MS_TRACE << endl;
   testCon.setDelay (-1,-1,200);  // 200 ticks for anything
   DData * testData = new DData (1001.1);
-  testCon.write (0,1,testData);
+  bool ok = testCon.write (0,1,testData);
+  MS_TRACE << " wrote " << ok << endl;
   ReadEvent  re100 (&Sch, &testCon);
   ReadEvent  re200 (&Sch, &testCon);
-  msim::SimTime  readTime1 (Sch.simTime() + 100);
-  msim::SimTime  readTime2 (readTime1 + 101);
+  msim::SimTime now (Sch.simTime());
+  MS_TRACE << " now is " << now << endl;
+  msim::SimTime  readTime1 (now + 100);
+  msim::SimTime  readTime2 (now + 300);
+  MS_TRACE << " check 1 " << now + 100 << " check 2 " << now + 200 << endl;
   Sch.schedule (re100, readTime1);
   Sch.schedule (re200, readTime2);
   MS_TRACE << __LINE__ << endl;
@@ -188,7 +203,8 @@ main (int argc, char* argv[])
 
   testConnector ();
 
-  Sch.runUntil (endTime);
+  //Sch.runUntil (endTime);
+  Sch.run ();
   MS_TRACE << " time of last event " << Sch.lastEventTime() << endl;
  }
   MS_LOG << " exiting " << endl;

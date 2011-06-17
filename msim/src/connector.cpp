@@ -1,5 +1,30 @@
 #include "connector.h"
+
+
+/****************************************************************
+ * This file is distributed under the following license:
+ *
+ * Copyright (C) 2011, Bernd Stramm
+ *
+ *  This program is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU General Public License
+ *  as published by the Free Software Foundation; either version 2
+ *  of the License, or (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, 
+ *  Boston, MA  02110-1301, USA.
+ ****************************************************************/
+
+
 #include "scheduler.h"
+#include "debug-log.h"
 
 namespace msim
 {
@@ -14,7 +39,8 @@ operator< (const Connector::DataPacket & left,
 Connector::Connector (Scheduler * sched, 
                       int inputs, 
                       int outputs)
-  :numInputs (inputs > 0 ? inputs : 0),
+  :scheduler(sched),
+   numInputs (inputs > 0 ? inputs : 0),
    numOutputs (outputs > 0 ? outputs : 0),
    delayFunc (0)
 {
@@ -133,7 +159,9 @@ Connector::read (int output)
     return 0;
   }
   DataPacket packet (*front);
+  MS_TRACE << " count before erase " << packetMap[output].size () << std::endl;
   packetMap[output].erase (front);
+  MS_TRACE << " count after erase " << packetMap[output].size () << std::endl;
   return packet.data;
 }
 
@@ -155,6 +183,9 @@ Connector::isReadAvailable (int output)
     return false;
   }
   if (scheduler() == 0) {
+    return false;
+  }
+  if (packetMap[output].empty()) {
     return false;
   }
   SimTime now = scheduler()->simTime();

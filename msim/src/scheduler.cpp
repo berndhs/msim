@@ -78,6 +78,7 @@ Scheduler::runUntil (const SimTime & endTime)
     it = eventList.lower_bound (currentTime);
     while (it != eventList.end () && it->first <= endTime) {
       Event* event = it->second;
+      MS_TRACE << " time " << it->first << " event " << hex << event << dec << endl;
       if (event) {
         currentTime = eventTimes[event->id()];
         event->happen ();
