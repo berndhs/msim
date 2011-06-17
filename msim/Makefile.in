@@ -66,9 +66,9 @@ $(TARGET): $(BIN_DIR) $(OBJ_DIR) $(OBJ)
 	$(CXX) $(CXX_CFLAGS) $(CXX_LDFLAGS) $(OBJ) -o $(TARGET) 
 
 install: all FORCE
-	install -d $(DESTDIR)/$(PREFIX)/$(LIBDIR)
+	install -d $(DESTDIR)/$(LIBDIR)
 	install -d $(DESTDIR)/$(PREFIX)/include/$(PROJECT_NAME)
-	install -m 0755 -p $(TARGET) $(DESTDIR)/$(PREFIX)/$(LIBDIR)
+	install -m 0755 -p $(TARGET) $(DESTDIR)/$(LIBDIR)
 	install -m 0644 -p $(HDR) $(DESTDIR)/$(PREFIX)/include/$(PROJECT_NAME)
 
 $(OBJ_DIR):
