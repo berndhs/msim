@@ -6,6 +6,7 @@ CHANGELOG=${NAME}.changes
 cd ..
 make printversion
 )
+source ../ld_library_path
 VERSION=`../print_msim_version`
 PACKDIR=${HOME}/packaging/msim
 

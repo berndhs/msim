@@ -3,7 +3,7 @@
 # Faux automake
 #  Copyright (C) 2010 Bernd Stramm
 #
-PREFIX=/usr
+PREFIX=/home/bernd
 DESTDIR=${PREFIX}/bin
 MAKE = make
 
