@@ -29,6 +29,7 @@
 #include <tagged-data.h>
 #include <expect-buffer.h>
 #include <debug-log.h>
+#include <connector.h>
 
 using namespace std;
 
@@ -104,6 +105,60 @@ public:
 
 };
 
+class ReadEvent : public msim::Event
+{
+public:
+
+  ReadEvent (msim::Scheduler * sched, msim::Connector * conn)
+    :Event (sched),
+     connector (conn)
+  {}
+
+  void happen ();
+  msim::Event  * copy () const;
+  
+private:
+
+  msim::Connector  *connector;
+};
+
+msim::Event * 
+ReadEvent::copy () const
+{
+  ReadEvent * cp = new ReadEvent (scheduler(), connector);
+  return cp;
+}
+
+void
+ReadEvent::happen ()
+{
+  MS_TRACE << " at " << scheduler()->simTime() << endl;
+  if (connector == 0) {
+    return;
+  }
+  MS_TRACE << " available " << connector->isReadAvailable (1);
+}
+
+
+msim::Scheduler Sch;
+msim::Connector  testCon (&Sch, 3, 2);  // 3 inputs 2 outputs
+
+void
+testConnector ()
+{
+  MS_TRACE << endl;
+  testCon.setDelay (-1,-1,200);  // 200 ticks for anything
+  DData * testData = new DData (1001.1);
+  testCon.write (0,1,testData);
+  ReadEvent  re100 (&Sch, &testCon);
+  ReadEvent  re200 (&Sch, &testCon);
+  msim::SimTime  readTime1 (Sch.simTime() + 100);
+  msim::SimTime  readTime2 (readTime1 + 101);
+  Sch.schedule (re100, readTime1);
+  Sch.schedule (re200, readTime2);
+  MS_TRACE << __LINE__ << endl;
+}
+
 int
 main (int argc, char* argv[])
 {
@@ -119,7 +174,6 @@ main (int argc, char* argv[])
   MS_TRACE << " myBuf expect count(" << etag << ") " << myBuf.expectCount(etag)
            << endl;
 
-  msim::Scheduler Sch;
   msim::SimTime  endTime (21);
   MyEvent  ev1 (&Sch, myBuf);
   Sch.schedule (ev1, msim::SimTime (10));
@@ -131,6 +185,8 @@ main (int argc, char* argv[])
   Sch.schedule (ev3, msim::SimTime (19));
 
   Sch.schedule (ev1, msim::SimTime (17)); // should replace the earlier one
+
+  testConnector ();
 
   Sch.runUntil (endTime);
   MS_TRACE << " time of last event " << Sch.lastEventTime() << endl;
