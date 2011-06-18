@@ -41,7 +41,7 @@ class SimpleTaggedData
 {
 public:
 
-  enum SpecialTags {
+  enum SimpleTag: DataTagType {
     Invalid = 0,
     MinStatic = 1,
     MinDynamic = (1 << 30)

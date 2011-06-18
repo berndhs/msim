@@ -3,7 +3,7 @@
 # Faux automake
 #  Copyright (C) 2010 Bernd Stramm
 #
-PREFIX=/home/bernd
+PREFIX=/usr
 DESTDIR=${PREFIX}/bin
 MAKE = make
 
@@ -34,7 +34,7 @@ include make.inc
 include files.inc
 
 CXX = g++
-CXX_CFLAGS = -O2 -Wall -g
+CXX_CFLAGS = -O2 -Wall -g -std=c++0x
 CXX_LDFLAGS = -lmsim
 EXTRA_INC= -I../msim/src
 EXTRA_LIB= -L../msim/bin
@@ -83,7 +83,6 @@ FORCE:
 
 
 make.dep: $(SRC) $(HDR)
-	$(CXX) -MM $(SRC) > make.dep.tmp
-	awk '{print "$(OBJ_DIR)/"$$0; }' make.dep.tmp > make.dep
+	$(CXX) -MM $(SRC) | sed 's+[^\.]*\.o:+$(OBJ_DIR)/&+' > make.dep
 
 
