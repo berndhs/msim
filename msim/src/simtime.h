@@ -114,6 +114,16 @@ public:
     return whichEternity;
   }
 
+  bool current () {
+    return whichEternity == inUniverse;
+  }
+  bool early () {
+    return whichEternity == beforeUniverse;
+  }
+  bool late () {
+    return whichEternity == afterUniverse;
+  }
+
 
   string epochString () const {
     if (whichEternity == inUniverse) {

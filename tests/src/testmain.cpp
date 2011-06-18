@@ -161,7 +161,9 @@ testConnector ()
   testCon.setDelay (-1,-1,200);  // 200 ticks for anything
   DData * testData = new DData (1001.1);
   msim::SimTime whenOk = testCon.write (0,1,testData);
-  MS_TRACE << " wrote " << whenOk << endl;
+  MS_TRACE << " wrote sould be 1 is " << whenOk.current() << endl;
+  whenOk = testCon.write (6,7,testData);
+  MS_TRACE << " wrote sould be 0 is " << whenOk.current() << endl;
   ReadEvent  re100 (&Sch, &testCon);
   ReadEvent  re200 (&Sch, &testCon);
   msim::SimTime now (Sch.simTime());
