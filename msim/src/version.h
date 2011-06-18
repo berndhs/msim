@@ -7,8 +7,8 @@ namespace msim
 {
 
 #define MSIM_VERSION_MAJOR 0
-#define MSIM_VERSION_MINOR 3
-#define MSIM_VERSION_PATCH 1
+#define MSIM_VERSION_MINOR 4
+#define MSIM_VERSION_PATCH 0
 
 #define MSIM_VERSION (((MSIM_VERSION_MAJOR)*10000) \
                      + ((MSIM_VERSION_MINOR)*100) \
