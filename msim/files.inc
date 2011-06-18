@@ -7,6 +7,7 @@ SRC = src/scheduler.cpp \
       src/expect-buffer.cpp \
       src/delay-buffer.cpp \
       src/connector.cpp \
+      src/tag-matcher.cpp \
 
 HDR = src/scheduler.h \
       src/simtime.h \
@@ -18,4 +19,5 @@ HDR = src/scheduler.h \
       src/debug-log.h \
       src/delay-buffer.h \
       src/connector.h \
+      src/tag-matcher.h \
 

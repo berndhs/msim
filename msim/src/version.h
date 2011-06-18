@@ -18,9 +18,9 @@ class Version
 {
 public:
 
-  static const int                 major;
-  static const int                 minor;
-  static const int                 patch;
+  static const int                 verMajor;
+  static const int                 verMinor;
+  static const int                 verPatch;
 
   static const std::string         version;
 

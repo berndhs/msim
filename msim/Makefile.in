@@ -42,7 +42,7 @@ include make.inc
 include files.inc
 
 CXX = g++
-CXX_CFLAGS = -O2 -Wall -g -fpic
+CXX_CFLAGS = -O3 -Wall -g -fpic -std=c++0x
 CXX_LDFLAGS = -shared
 
 LIBS =

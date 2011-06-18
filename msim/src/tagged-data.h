@@ -54,7 +54,7 @@ public:
 
   bool         valid ();
 
-  static DataTagType   genTag ();
+  static DataTagType   genTag ();  // generate a dynamic tag
 
   static bool validTag (DataTagType tag);
 

@@ -77,7 +77,7 @@ public:
   /* data packet read/write functions */
 
   /** write: output = -1 broadcasts */
-  virtual bool write (int input, int output, SimpleTaggedData * data);
+  virtual SimTime write (int input, int output, SimpleTaggedData * data);
 
   /** read returns null if not available at current sim time */
   virtual SimpleTaggedDataPtr  read   (int output);

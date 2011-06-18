@@ -106,13 +106,13 @@ Connector::setDelayFunction (DelayFunctionType * function)
   delayFunc = function;
 }
 
-bool
+SimTime
 Connector::write (int input, int output, SimpleTaggedDataPtr data)
 {
   if (scheduler() == 0 || data == 0 
       || input < 0 || input >= numInputs
       || output >= numOutputs) {
-    return false;
+    return SimTime::tooLate();
   }
   SimTime arrival = scheduler()->simTime();
   SimTickType maxDelay (-1);
@@ -127,7 +127,7 @@ Connector::write (int input, int output, SimpleTaggedDataPtr data)
     maxDelay = delayMap[input][output];
   }
   if (maxDelay < 0) {
-    return false;
+    return SimTime::tooLate();
   }
   arrival += maxDelay;
   if (output >= 0) {
@@ -138,7 +138,7 @@ Connector::write (int input, int output, SimpleTaggedDataPtr data)
       packetMap[out].insert (DataPacket (arrival, data, input, out));
     }
   }
-  return true;
+  return arrival;
 }
 
 SimpleTaggedDataPtr

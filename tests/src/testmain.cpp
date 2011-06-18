@@ -36,7 +36,7 @@ using namespace std;
 typedef msim::TaggedData <double>  DData;
 
 double dnumber (111.1);
-msim::DataTagType  etag (33);
+msim::DataTagType  etag (msim::SimpleTaggedData::genTag());
 
 class MyEvent : public msim::Event {
 public:
