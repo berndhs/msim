@@ -76,7 +76,7 @@ install: $(PROJECT_NAME).pc all FORCE
 	install -d $(DESTDIR)/$(LIBDIR)/pkgconfig
 	install -m 0755 -p $(TARGET) $(DESTDIR)/$(LIBDIR)
 	install -m 0644 -p $(HDR) $(DESTDIR)/$(PREFIX)/include/$(PROJECT_NAME)
-	install -m 0644 -p $(PROJECT_NAME).pc $(LIBDIR)/pkgconfig/
+	install -m 0644 -p $(PROJECT_NAME).pc $(DESTDIR)/$(LIBDIR)/pkgconfig/
 
 version.inc: src/version-numbers.h
 	cpp version-cpp-sed.in | grep VERSION | sed 's+\ ++g' \
