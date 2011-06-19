@@ -23,15 +23,15 @@
 
 
 #include <iostream>
-#include <scheduler.h>
-#include <event.h>
-#include <version.h>
-#include <tagged-data.h>
-#include <expect-buffer.h>
-#include <debug-log.h>
-#include <connector.h>
-#include <tag-matcher.h>
-#include <data-consumer.h>
+#include "../../msim/src/scheduler.h"
+#include "../../msim/src/event.h"
+#include "../../msim/src/version.h"
+#include "../../msim/src/tagged-data.h"
+#include "../../msim/src/expect-buffer.h"
+#include "../../msim/src/debug-log.h"
+#include "../../msim/src/connector.h"
+#include "../../msim/src/tag-matcher.h"
+#include "../../msim/src/data-consumer.h"
 
 using namespace std;
 
@@ -271,5 +271,6 @@ main (int argc, char* argv[])
   MS_TRACE << " time of last event " << Sch.lastEventTime() << endl;
  }
   MS_LOG << " exiting " << endl;
+  cout << " using msim version " << msim::Version::version << endl;
  return 0;
 }
