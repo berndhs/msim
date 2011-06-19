@@ -1,6 +1,3 @@
 #include "./src/version-numbers.h"
 
-#define msim_xstr(s) msim_str(s)
-#define msim_str(s) #s
-
 VERSION=MSIM_VERSION_MAJOR.MSIM_VERSION_MINOR.MSIM_VERSION_PATCH
