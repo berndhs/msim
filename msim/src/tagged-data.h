@@ -37,6 +37,12 @@ namespace msim
 
 typedef unsigned long long int DataTagType;  
 
+enum class TagDuration {
+  Never = 0,
+  Once = 1,
+  Always = 2
+};
+
 class SimpleTaggedData
 {
 public:

@@ -30,6 +30,8 @@
 #include <expect-buffer.h>
 #include <debug-log.h>
 #include <connector.h>
+#include <tag-matcher.h>
+#include <data-consumer.h>
 
 using namespace std;
 
@@ -132,7 +134,9 @@ ReadEvent::copy () const
 void
 ReadEvent::happen ()
 {
+  MS_TRACE << " event id " << id() << endl;
   MS_TRACE << " at " << scheduler()->simTime() << endl;
+  MS_TRACE << " scheduler " << hex << scheduler() << dec << endl;
   if (connector == 0) {
     return;
   }
@@ -143,7 +147,7 @@ ReadEvent::happen ()
            << connector->whenReadAvailable (1) << endl;
   if (connector->isReadAvailable (1)) {
     msim::SimpleTaggedDataPtr pD = connector->read (1);
-    MS_TRACE << "  got data " << hex << pD << endl;
+    MS_TRACE << "  got data " << hex << pD << dec << endl;
     MS_TRACE << "  now available " << connector->isReadAvailable (1) << endl;
     MS_TRACE << "    now available time (1) " 
            << connector->whenReadAvailable (1) << endl;
@@ -151,8 +155,13 @@ ReadEvent::happen ()
 }
 
 
+/*******************************/
+
+
 msim::Scheduler Sch;
 msim::Connector  testCon (&Sch, 3, 2);  // 3 inputs 2 outputs
+
+
 
 void
 testConnector ()
@@ -175,6 +184,56 @@ testConnector ()
   Sch.schedule (re200, readTime2);
   MS_TRACE << __LINE__ << endl;
 }
+
+msim::DataTagType  testMatchTag (55);
+
+class MatchEvent: public msim::Event 
+{
+public:
+
+  MatchEvent (msim::Scheduler *sch, msim::TagMatcher * match)
+    :Event (sch),
+     matcher (match)
+  {}
+
+  msim::Event * copy () const
+  {
+    return new MatchEvent (scheduler(), matcher);
+  }
+
+  void happen () 
+  {
+    MS_TRACE << " event id " << id() << endl;
+    MS_TRACE << " at " << scheduler()->simTime() << endl;
+    MS_TRACE << " scheduler " << hex << scheduler() << dec << endl;
+    msim::TaggedData<double>  * pD 
+      = new msim::TaggedData<double> (testMatchTag, 5.5);
+    matcher->dataArrived (pD);  
+  }
+
+private:
+  msim::TagMatcher * matcher;
+};
+
+msim::DataConsumer  consumer (1);
+msim::TagMatcher    matcher;
+
+void
+testConsumer ()
+{
+  MS_TRACE << endl;
+  matcher.registerClient (consumer.port(0), testMatchTag, 
+         msim::TagDuration::Once);
+  consumer.expectTag (0, testMatchTag);
+  MS_TRACE << " for match events, sched  at " << hex << &Sch 
+          << " matcher at " << &matcher << dec << endl;
+  MatchEvent  mEv1 (&Sch, &matcher);
+  MatchEvent  mEv2 (&Sch, &matcher);
+  msim::SimTime now = Sch.simTime ();
+  Sch.schedule (mEv1, now + 1000);
+  Sch.schedule (mEv2, now + 2000);
+}
+
 
 int
 main (int argc, char* argv[])
@@ -204,6 +263,8 @@ main (int argc, char* argv[])
   Sch.schedule (ev1, msim::SimTime (17)); // should replace the earlier one
 
   testConnector ();
+
+  testConsumer ();
 
   //Sch.runUntil (endTime);
   Sch.run ();

@@ -22,11 +22,12 @@
  *  Boston, MA  02110-1301, USA.
  ****************************************************************/
 
+#include "debug-log.h"
 
 namespace msim
 {
-DataConsumer::DataConsumer ()
-  :numPorts (4),
+DataConsumer::DataConsumer (int nPorts)
+  :numPorts (nPorts),
    registerFile (0)
 {
   registerFile = new Register[numPorts];
@@ -34,14 +35,36 @@ DataConsumer::DataConsumer ()
 
 DataConsumer::Register::Register ()
   :ExpectBuffer (1),
-   TagMatcher()
+   TagMatcherClient()
 {
 }
 
+ExpectBuffer * 
+DataConsumer::Register::expectBuffer ()
+{
+  return this;
+}
+
+TagMatcherClient * 
+DataConsumer::Register::tagMatcherClient ()
+{
+  return this;
+}
+
 int
-DataConsumer::portCount ()
+DataConsumer::portCount () const
 {
   return numPorts;
+}
+
+TagMatcherClient *
+DataConsumer::port (int portNum)
+{
+  if (0 <= portNum && portNum < numPorts) {
+    return registerFile[portNum].tagMatcherClient();
+  } else {
+    return 0;
+  }
 }
 
 void
@@ -55,7 +78,10 @@ DataConsumer::expectTag (int port, DataTagType tag)
 bool
 DataConsumer::Register::dataArrived (SimpleTaggedDataPtr pData)
 {
-  return writeToBuffer (pData);
+  MS_TRACE << "     tag " << pData->tag() << std::endl;
+  bool ok = writeToBuffer (pData);
+  MS_TRACE << std::hex << pData << std::dec << " ok " << ok << std::endl;
+  return ok;
 }
 
 }  // namespace

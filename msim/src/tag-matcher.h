@@ -40,17 +40,13 @@ class TagMatcher
 {
 public:
 
-  enum class Duration {
-    Match_Once = 0,
-    Match_Always = 1
-  };
 
   TagMatcher ();
   TagMatcher (const TagMatcher & other);
 
   void registerClient   (TagMatcherClient * client, 
                    DataTagType        tag, 
-                   Duration           duration);
+                   TagDuration        duration);
   int unregisterClient (TagMatcherClient * client);
   int unregisterClient (TagMatcherClient * client, DataTagType tag);
 
@@ -60,7 +56,7 @@ private:
 
   class ClientRecord {
   public:
-    ClientRecord (DataTagType t, Duration d, TagMatcherClient *pD)
+    ClientRecord (DataTagType t, TagDuration d, TagMatcherClient *pD)
       :tag (t),
        duration (d),
        client (pD)
@@ -71,7 +67,7 @@ private:
        client (other.client)
     {}
     DataTagType        tag;
-    Duration           duration;
+    TagDuration        duration;
     TagMatcherClient  *client;
   };
 

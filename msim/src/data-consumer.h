@@ -33,9 +33,9 @@ class DataConsumer
 {
 public:
 
-  DataConsumer ();
+  DataConsumer (int nPorts);
 
-  int  portCount ();
+  int  portCount () const;
   TagMatcherClient * port (int portNum);
 
   void expectTag (int port, DataTagType tag);
@@ -43,16 +43,18 @@ public:
 
 private:
 
-  class Register : public ExpectBuffer, public TagMatcher
+  class Register : public ExpectBuffer, public TagMatcherClient
   {
   public:
     Register ();
     bool dataArrived (SimpleTaggedDataPtr pData);
+    ExpectBuffer * expectBuffer ();
+    TagMatcherClient * tagMatcherClient ();
   private:
     DataConsumer *parent;
   };
 
-  const int numPorts;
+  int           numPorts;
   Register     *registerFile;
 };
 

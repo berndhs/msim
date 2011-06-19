@@ -36,7 +36,7 @@ TagMatcher::TagMatcher (const TagMatcher & other)
 void
 TagMatcher::registerClient (TagMatcherClient * client,  
                       DataTagType        tag, 
-                      Duration           duration)
+                      TagDuration           duration)
 {
   ClientMap::iterator it = clientMap.lower_bound (tag);
   while (it != clientMap.end() && it->first == tag) {
@@ -92,7 +92,7 @@ TagMatcher::dataArrived (SimpleTaggedDataPtr pData)
     TagMatcherClient * client (it->second.client);
     if (client) {
       delivered |= client->dataArrived (pData);
-      if (delivered && it->second.duration == Duration::Match_Once) {
+      if (delivered && it->second.duration == TagDuration::Once) {
         clientMap.erase (it);
       }
     }
