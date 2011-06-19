@@ -36,6 +36,8 @@ MAKEFILE = Makefile
 TOP_MAKEFILE = Makefile
 TARGET = $(BIN_DIR)/lib${PROJECT_NAME}.so
 
+include version.inc
+
 include make.inc
 
 # files.inc defines SRC and HDR
@@ -65,11 +67,23 @@ distclean:
 $(TARGET): $(BIN_DIR) $(OBJ_DIR) $(OBJ) 
 	$(CXX) $(CXX_CFLAGS) $(CXX_LDFLAGS) $(OBJ) -o $(TARGET) 
 
-install: all FORCE
+install: $(PROJECT_NAME).pc all FORCE
 	install -d $(DESTDIR)/$(LIBDIR)
 	install -d $(DESTDIR)/$(PREFIX)/include/$(PROJECT_NAME)
+	install -d $(DESTDIR)/$(LIBDIR)/pkgconfig
 	install -m 0755 -p $(TARGET) $(DESTDIR)/$(LIBDIR)
 	install -m 0644 -p $(HDR) $(DESTDIR)/$(PREFIX)/include/$(PROJECT_NAME)
+	install -m 0644 -p $(PROJECT_NAME).pc $(LIBDIR)/pkgconfig/
+
+version.inc: src/version.h
+	cpp version-cpp-sed.in | grep VERSION | sed 's+\ ++g' \
+	  > version.inc
+
+msim.pc: FORCE
+	sed 's+PREFIX+${PREFIX}+g' msim.pc.in \
+	  | sed 's+LIBDIR+${LIBDIR}+g' \
+	  | sed 's+VERSION+$(VERSION)+g' \
+	  > msim.pc
 
 $(OBJ_DIR):
 	mkdir $(OBJ_DIR)

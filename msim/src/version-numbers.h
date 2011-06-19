@@ -1,0 +1,12 @@
+#ifndef MSIM_VERSION_NUMBERS_H
+#define MSIM_VERSION_NUMBERS_H
+
+#define MSIM_VERSION_MAJOR 0
+#define MSIM_VERSION_MINOR 4
+#define MSIM_VERSION_PATCH 0
+
+#define MSIM_VERSION (((MSIM_VERSION_MAJOR)*10000) \
+                     + ((MSIM_VERSION_MINOR)*100) \
+                     + (MSIM_VERSION_PATCH))
+
+#endif
