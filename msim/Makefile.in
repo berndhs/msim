@@ -34,7 +34,9 @@ BIN_DIR = bin
 PROJECT_NAME=msim
 MAKEFILE = Makefile
 TOP_MAKEFILE = Makefile
-TARGET = $(BIN_DIR)/lib${PROJECT_NAME}.so
+SHORT_TARGET = lib${PROJECT_NAME}.so
+LONG_TARGET = $(SHORT_TARGET).$(VERSION)
+TARGET = $(BIN_DIR)/$(LONG_TARGET)
 
 include version.inc
 
@@ -66,6 +68,7 @@ distclean:
 
 $(TARGET): $(BIN_DIR) $(OBJ_DIR) $(OBJ) 
 	$(CXX) $(CXX_CFLAGS) $(CXX_LDFLAGS) $(OBJ) -o $(TARGET) 
+	cd $(BIN_DIR); 	ln -svf $(LONG_TARGET) $(SHORT_TARGET)
 
 install: $(PROJECT_NAME).pc all FORCE
 	install -d $(DESTDIR)/$(LIBDIR)
@@ -75,14 +78,14 @@ install: $(PROJECT_NAME).pc all FORCE
 	install -m 0644 -p $(HDR) $(DESTDIR)/$(PREFIX)/include/$(PROJECT_NAME)
 	install -m 0644 -p $(PROJECT_NAME).pc $(LIBDIR)/pkgconfig/
 
-version.inc: src/version.h
+version.inc: src/version-numbers.h
 	cpp version-cpp-sed.in | grep VERSION | sed 's+\ ++g' \
 	  > version.inc
 
 msim.pc: FORCE
-	sed 's+PREFIX+${PREFIX}+g' msim.pc.in \
-	  | sed 's+LIBDIR+${LIBDIR}+g' \
-	  | sed 's+VERSION+$(VERSION)+g' \
+	sed 's+@PREFIX@+${PREFIX}+g' msim.pc.in \
+	  | sed 's+@LIBDIR@+${LIBDIR}+g' \
+	  | sed 's+@VERSION@+$(VERSION)+g' \
 	  > msim.pc
 
 $(OBJ_DIR):

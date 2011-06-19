@@ -1,0 +1,11 @@
+prefix=@PREFIX@
+libdir=@LIBDIR@
+exec_prefix=${prefix}
+includedir=${prefix}/include
+
+Name: msim
+Description: MSim Library for Discrete Event Simulation
+Version: @VERSION@
+CFlags: -I${includedir}/msim
+Libs: -L${libdir} -lmsim
+
