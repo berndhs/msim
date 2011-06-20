@@ -27,8 +27,6 @@
 #include "property.h"
 #include "tagged-data.h"
 
-using namespace deliberate;
-
 namespace msim
 {
 

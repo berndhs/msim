@@ -1,5 +1,5 @@
-#ifndef DELIBERATE_H
-#define DELIBERATE_H
+#ifndef MSIM_PROPERTY_H
+#define MSIM_PROPERTY_H
 
 /****************************************************************
  * This file is distributed under the following license:
@@ -24,7 +24,7 @@
  
 #include <stdio.h>
 
-namespace deliberate {
+namespace msim {
 
 template <typename T>
   class Property

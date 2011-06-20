@@ -26,8 +26,6 @@
 
 #include "property.h"
 
-using namespace deliberate;
-
 namespace msim
 {
 

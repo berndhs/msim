@@ -4,7 +4,6 @@
 #include "property.h"
 #include "simtime.h"
 
-using namespace deliberate;
 
 namespace msim
 {
