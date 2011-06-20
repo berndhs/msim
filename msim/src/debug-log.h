@@ -25,6 +25,10 @@
 
 
 #include <iostream>
+#include <fstream>
+
+#define MS_DEBUG_OFF msim::DebugLog::setQuiet(true);
+#define MS_DEBUG_ON msim::DebugLog::setQuiet(false);
 
 #define MS_LOG msim::DebugLog::Debug() 
 
@@ -32,13 +36,34 @@
 
 #define MS_TRACE msim::DebugLog::Debug() << __PRETTY_FUNCTION__ << "  "
 
+using namespace std;
+
 namespace msim
 {
 class DebugLog
 {
 public:
+
+static void setQuiet (bool q) { quiet = q;}
+
  
-static std::ostream & Debug() { return std::cerr; }
+static std::ostream & Debug() 
+  { 
+    if (quiet) {
+      return *noStream;
+    }
+    return cerr; 
+  }
+
+static bool isQuiet () { return quiet; }
+
+private:
+
+  static bool     quiet;
+
+  static ofstream * noStream;
+  static ofstream * initNada();
+
 
 };
 

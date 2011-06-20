@@ -5,6 +5,7 @@ SRC = src/scheduler.cpp \
       src/version.cpp \
       src/tagged-data.cpp \
       src/expect-buffer.cpp \
+      src/debug-log.cpp \
       src/delay-buffer.cpp \
       src/connector.cpp \
       src/tag-matcher.cpp \

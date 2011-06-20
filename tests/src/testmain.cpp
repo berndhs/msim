@@ -241,6 +241,8 @@ main (int argc, char* argv[])
  {
 
   cout << " using msim version " << msim::Version::version << endl;
+  cout << " quiet ? " << msim::DebugLog::isQuiet () << endl;
+  //MS_DEBUG_ON ;
 
 
   MyBuf  myBuf;
@@ -250,6 +252,9 @@ main (int argc, char* argv[])
   MS_TRACE << " myBuf expect count(" << etag << ") " << myBuf.expectCount(etag)
            << endl;
 
+  MS_TRACE << " turning off messags " << endl;
+  cout << " quiet ? " << msim::DebugLog::isQuiet () << endl;
+  MS_DEBUG_OFF;
   msim::SimTime  endTime (21);
   MyEvent  ev1 (&Sch, myBuf);
   Sch.schedule (ev1, msim::SimTime (10));
@@ -272,5 +277,6 @@ main (int argc, char* argv[])
  }
   MS_LOG << " exiting " << endl;
   cout << " using msim version " << msim::Version::version << endl;
+  cout << " quiet ? " << msim::DebugLog::isQuiet () << endl;
  return 0;
 }
