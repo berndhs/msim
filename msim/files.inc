@@ -16,6 +16,7 @@ HDR = src/scheduler.h \
       src/event.h \
       src/property.h \
       src/version.h \
+      src/version-numbers.h \
       src/tagged-data.h \
       src/expect-buffer.h \
       src/debug-log.h \
