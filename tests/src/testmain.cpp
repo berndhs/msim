@@ -272,6 +272,7 @@ main (int argc, char* argv[])
   testConsumer ();
 
   //Sch.runUntil (endTime);
+  MS_DEBUG_OFF ;
   Sch.run ();
   MS_TRACE << " time of last event " << Sch.lastEventTime() << endl;
  }
