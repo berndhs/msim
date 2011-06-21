@@ -41,15 +41,16 @@ enum class TagDuration {
   Always = 2
 };
 
+enum SimpleTag: DataTagType {
+  Invalid = 0,
+  MinStatic = 1,
+  MinDynamic = (1 << 30)
+};
+
 class SimpleTaggedData
 {
 public:
 
-  enum SimpleTag: DataTagType {
-    Invalid = 0,
-    MinStatic = 1,
-    MinDynamic = (1 << 30)
-  };
 
   SimpleTaggedData (DataTagType tagValue = Invalid);
   SimpleTaggedData (const SimpleTaggedData & other);
@@ -80,7 +81,7 @@ public:
      payload (other.payload())
   {}
 
-  TaggedData<PayloadType> (DataTagType tagValue = SimpleTaggedData::Invalid,
+  TaggedData<PayloadType> (DataTagType tagValue = SimpleTag::Invalid,
                            const PayloadType & data = PayloadType())
     :SimpleTaggedData (tagValue),
      payload (data)

@@ -251,22 +251,32 @@ Connector::deliverOutputs (int output)
 {
   DataDestination * dest = destination[output];
   if (!dest) {
+    MS_TRACE << " stage " << 1 << std::endl;
     return;
   }
   Scheduler * sched = scheduler();
+    MS_TRACE << " stage " << 2 << std::endl;
   if (!sched) {
+    MS_TRACE << " stage " << 3 << std::endl;
     return;
   }
   SimTime now = sched->simTime();
+    MS_TRACE << " stage " << 4 << " at " << now << std::endl;
   PacketQueue  &q (packetMap[output]);
   auto dit = q.begin ();
   while (dit != q.end()) {
+    MS_TRACE << " stage " << 5 << std::endl;
     DataPacket packet (*dit);
     if (packet.releaseTime <= now) {
-      if (dest->dataArrived (packet.data)) {
+      bool taken = dest->dataArrived (packet.data);
+      MS_TRACE << " out " << output << " at time " 
+               << now << " for " << packet.releaseTime << std::endl;
+      MS_TRACE << " took " << taken << " packet " << packet.data << endl;
+      if (taken) {
         q.erase (dit);
       }
     }
+    MS_TRACE << " stage " << 6 << std::endl;
     dit ++;
   }
 }

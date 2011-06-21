@@ -58,20 +58,35 @@ ExpectBuffer::isExpectingData (DataTagType tag)
   return false;
 }
 
+DataTagType
+ExpectBuffer::expectingTag (int slot)
+{
+  if (0 <= slot && slot < numSlots) {
+    if (slots[slot].empty) {
+      return SimpleTag::Invalid;
+    } else {
+      return slots[slot].data->tag();
+    }
+  } else {
+    return SimpleTag::Invalid;
+  }
+}
+
 bool
 ExpectBuffer::expectData (DataTagType tag)
 {
+  MS_TRACE << " desired tag " << tag << std::endl;
   if (!SimpleTaggedData::validTag (tag)) {
     return false;   // won't expect invalid data
   }
   for (int s=0; s<numSlots; s++) {
-MS_TRACE << " slot " << s << " " 
+    MS_TRACE << " slot " << s << " " 
          << slots[s].data << " empty " << slots[s].empty
-         << " tag " << slots[s].data->tag() 
+         << " old tag " << slots[s].data->tag() 
          << std::endl;
-    if (slots[s].empty && !slots[s].data->valid()) {
+    if (slots[s].empty || !slots[s].data->valid()) {
       slots[s].data->tag.set(tag);
-MS_TRACE << " using slot " << s << std::endl;
+    MS_TRACE << " using slot " << s << std::endl;
       return true;
     }
   }
@@ -83,6 +98,7 @@ ExpectBuffer::writeToBuffer (SimpleTaggedDataPtr pData)
 {
   DataTagType tag = pData->tag();
   for (int s=0; s<numSlots; s++) {
+    MS_TRACE << " slot " << s << " expect " << slots[s].data->tag() << std::endl;
     if (slots[s].empty && slots[s].data->tag() == tag) {
       slots[s].data  = pData;
       slots[s].empty = false;
@@ -99,7 +115,7 @@ ExpectBuffer::consumeData (DataTagType tag, SimpleTaggedDataPtr pData)
     if (!slots[s].empty && slots[s].data->tag() == tag) {
       pData = slots[s].data;
       slots[s].empty = true;
-      slots[s].data->tag.set(SimpleTaggedData::Invalid);
+      slots[s].data->tag.set(SimpleTag::Invalid);
       return true;
     }
   }

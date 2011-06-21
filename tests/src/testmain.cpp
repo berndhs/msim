@@ -240,10 +240,10 @@ testConsumer ()
 {
   MS_TRACE << endl;
   matcher.registerClient (consumer.port(0), testMatchTag, 
-         TagDuration::Once);
+         TagDuration::Always);
+  matchConn.setDelay (0,0,70);
   matchConn.registerClient (0, &matcher);
   consumer.expectTag (0, testMatchTag);
-  matchConn.setDelay (0,0,50);
   MS_TRACE << " for match events, sched  at " << hex << &Sch 
           << " matcher at " << &matcher << dec << endl;
   MatchEvent  mEv1 (&Sch, &matchConn);

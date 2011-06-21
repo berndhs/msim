@@ -29,6 +29,7 @@
 
 namespace msim
 {
+
 class DataConsumer
 {
 public:
@@ -39,7 +40,7 @@ public:
   DataDestination * port (int portNum);
 
   void expectTag (int port, DataTagType tag);
-  SimpleTaggedDataPtr  readPort (int port);
+  DataTagType  expectingTag (int port);
 
 private:
 

@@ -42,6 +42,7 @@ public:
 
   /// \brief false if not expecting data of this tag 
   virtual bool  isExpectingData (DataTagType tag);
+  virtual DataTagType  expectingTag (int slot);
 
   /// \brief false if no empty slots, so will not be expecting
   virtual bool  expectData (DataTagType tag);
