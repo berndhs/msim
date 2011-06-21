@@ -47,32 +47,33 @@
 #endif
 
 using namespace std;
+using namespace msim;
 
-typedef msim::TaggedData <double>  DData;
+typedef TaggedData <double>  DData;
 
 double dnumber (111.1);
-msim::DataTagType  etag (msim::SimpleTaggedData::genTag());
+DataTagType  etag (SimpleTaggedData::genTag());
 
-class MyEvent : public msim::Event {
+class MyEvent : public Event {
 public:
 
-  MyEvent (msim::Scheduler * sched, msim::ExpectBuffer & buf);
+  MyEvent (Scheduler * sched, ExpectBuffer & buf);
 
   void          happen () ;
-  msim::Event * copy () const;
+  Event * copy () const;
 
 private:
 
-  msim::ExpectBuffer & buffer;
+  ExpectBuffer & buffer;
 };
 
-MyEvent::MyEvent (msim::Scheduler * sched, msim::ExpectBuffer & buf)
+MyEvent::MyEvent (Scheduler * sched, ExpectBuffer & buf)
   :Event (sched),
    buffer (buf)
 {
 }
 
-msim::Event *
+Event *
 MyEvent::copy () const
 {
   MyEvent * cp = new MyEvent (*this);
@@ -101,7 +102,7 @@ MyEvent::happen ()
 }
 
 
-class MyBuf : public msim::ExpectBuffer {
+class MyBuf : public ExpectBuffer {
 public:
 
   MyBuf ()
@@ -110,7 +111,7 @@ public:
     MS_TRACE << endl;
   }
 
-  bool writeToBuffer (msim::SimpleTaggedDataPtr  pData)
+  bool writeToBuffer (SimpleTaggedDataPtr  pData)
   {
     MS_TRACE << endl;
     bool ok = ExpectBuffer::writeToBuffer (pData);
@@ -120,24 +121,24 @@ public:
 
 };
 
-class ReadEvent : public msim::Event
+class ReadEvent : public Event
 {
 public:
 
-  ReadEvent (msim::Scheduler * sched, msim::Connector * conn)
+  ReadEvent (Scheduler * sched, Connector * conn)
     :Event (sched),
      connector (conn)
   {}
 
   void happen ();
-  msim::Event  * copy () const;
+  Event  * copy () const;
   
 private:
 
-  msim::Connector  *connector;
+  Connector  *connector;
 };
 
-msim::Event * 
+Event * 
 ReadEvent::copy () const
 {
   ReadEvent * cp = new ReadEvent (scheduler(), connector);
@@ -159,7 +160,7 @@ ReadEvent::happen ()
   MS_TRACE << "    available time (1) " 
            << connector->whenReadAvailable (1) << endl;
   if (connector->isReadAvailable (1)) {
-    msim::SimpleTaggedDataPtr pD = connector->read (1);
+    SimpleTaggedDataPtr pD = connector->read (1);
     MS_TRACE << "  got data " << hex << pD << dec << endl;
     MS_TRACE << "  now available " << connector->isReadAvailable (1) << endl;
     MS_TRACE << "    now available time (1) " 
@@ -171,8 +172,8 @@ ReadEvent::happen ()
 /*******************************/
 
 
-msim::Scheduler Sch;
-msim::Connector  testCon (&Sch, 3, 2);  // 3 inputs 2 outputs
+Scheduler Sch;
+Connector  testCon (&Sch, 3, 2);  // 3 inputs 2 outputs
 
 
 
@@ -182,68 +183,75 @@ testConnector ()
   MS_TRACE << endl;
   testCon.setDelay (-1,-1,200);  // 200 ticks for anything
   DData * testData = new DData (1001.1);
-  msim::SimTime whenOk = testCon.write (0,1,testData);
+  SimTime whenOk = testCon.write (0,1,testData);
   MS_TRACE << " wrote sould be 1 is " << whenOk.current() << endl;
   whenOk = testCon.write (6,7,testData);
   MS_TRACE << " wrote sould be 0 is " << whenOk.current() << endl;
   ReadEvent  re100 (&Sch, &testCon);
   ReadEvent  re200 (&Sch, &testCon);
-  msim::SimTime now (Sch.simTime());
+  SimTime now (Sch.simTime());
   MS_TRACE << " now is " << now << endl;
-  msim::SimTime  readTime1 (now + 100);
-  msim::SimTime  readTime2 (now + 300);
+  SimTime  readTime1 (now + 100);
+  SimTime  readTime2 (now + 300);
   MS_TRACE << " check 1 " << now + 100 << " check 2 " << now + 200 << endl;
   Sch.schedule (re100, readTime1);
   Sch.schedule (re200, readTime2);
   MS_TRACE << __LINE__ << endl;
 }
 
-msim::DataTagType  testMatchTag (55);
+DataTagType  testMatchTag (55);
 
-class MatchEvent: public msim::Event 
+class MatchEvent: public Event 
 {
 public:
 
-  MatchEvent (msim::Scheduler *sch, msim::TagMatcher * match)
+  MatchEvent (Scheduler *sch, Connector * conn)
     :Event (sch),
-     matcher (match)
+     connector (conn)
   {}
 
-  msim::Event * copy () const
+  Event * copy () const
   {
-    return new MatchEvent (scheduler(), matcher);
+    return new MatchEvent (scheduler(), connector);
   }
 
   void happen () 
   {
-    MS_TRACE << " event id " << id() << endl;
+    MS_TRACE << " match-event id " << id() << endl;
     MS_TRACE << " at " << scheduler()->simTime() << endl;
     MS_TRACE << " scheduler " << hex << scheduler() << dec << endl;
-    msim::TaggedData<double>  * pD 
-      = new msim::TaggedData<double> (testMatchTag, 5.5);
-    matcher->dataArrived (pD);  
+    TaggedData<double>  * pD 
+      = new TaggedData<double> (testMatchTag, 5.5);
+    connector->write (0,0, pD);  
   }
 
 private:
-  msim::TagMatcher * matcher;
+  Connector * connector;
 };
 
-msim::DataConsumer  consumer (1);
-msim::TagMatcher    matcher;
+/*********************************/
+
+DataConsumer  consumer (1);
+TagMatcher    matcher;
+Connector     matchConn (&Sch,1,1);
 
 void
 testConsumer ()
 {
   MS_TRACE << endl;
   matcher.registerClient (consumer.port(0), testMatchTag, 
-         msim::TagDuration::Once);
+         TagDuration::Once);
+  matchConn.registerClient (0, &matcher);
   consumer.expectTag (0, testMatchTag);
+  matchConn.setDelay (0,0,50);
   MS_TRACE << " for match events, sched  at " << hex << &Sch 
           << " matcher at " << &matcher << dec << endl;
-  MatchEvent  mEv1 (&Sch, &matcher);
-  MatchEvent  mEv2 (&Sch, &matcher);
-  msim::SimTime now = Sch.simTime ();
+  MatchEvent  mEv1 (&Sch, &matchConn);
+  MatchEvent  mEv2 (&Sch, &matchConn);
+  SimTime now = Sch.simTime ();
+  MS_TRACE << " schedule event " << mEv1.id () << endl;
   Sch.schedule (mEv1, now + 1000);
+  MS_TRACE << " schedule event " << mEv2.id () << endl;
   Sch.schedule (mEv2, now + 2000);
 }
 
@@ -253,44 +261,43 @@ main (int argc, char* argv[])
 {
  {
 
-  cout << " using msim version " << msim::Version::version << endl;
-  cout << " quiet ? " << msim::DebugLog::isQuiet () << endl;
-  //MS_DEBUG_ON ;
+  cout << " using msim version " << Version::version << endl;
+  cout << " quiet ? " << DebugLog::isQuiet () << endl;
+  MS_DEBUG_ON ;
 
 
   MyBuf  myBuf;
   MS_TRACE << " myBuf expect count(" << etag << ") " << myBuf.expectCount(etag)
            << endl;
-  myBuf.expectData (msim::DataTagType (etag));
+  myBuf.expectData (DataTagType (etag));
   MS_TRACE << " myBuf expect count(" << etag << ") " << myBuf.expectCount(etag)
            << endl;
 
   MS_TRACE << " turning off messags " << endl;
-  cout << " quiet ? " << msim::DebugLog::isQuiet () << endl;
-  MS_DEBUG_OFF;
-  msim::SimTime  endTime (21);
+  cout << " quiet ? " << DebugLog::isQuiet () << endl;
+  
+  SimTime  endTime (21);
   MyEvent  ev1 (&Sch, myBuf);
-  Sch.schedule (ev1, msim::SimTime (10));
+  Sch.schedule (ev1, SimTime (10));
 
   MyEvent ev2 (&Sch, myBuf);
-  Sch.schedule (ev2, msim::SimTime (15));
+  Sch.schedule (ev2, SimTime (15));
 
   MyEvent ev3 (&Sch, myBuf);
-  Sch.schedule (ev3, msim::SimTime (19));
+  Sch.schedule (ev3, SimTime (19));
 
-  Sch.schedule (ev1, msim::SimTime (17)); // should replace the earlier one
+  Sch.schedule (ev1, SimTime (17)); // should replace the earlier one
 
   testConnector ();
 
   testConsumer ();
 
   //Sch.runUntil (endTime);
-  MS_DEBUG_OFF ;
   Sch.run ();
   MS_TRACE << " time of last event " << Sch.lastEventTime() << endl;
  }
   MS_LOG << " exiting " << endl;
-  cout << " using msim version " << msim::Version::version << endl;
-  cout << " quiet ? " << msim::DebugLog::isQuiet () << endl;
+  cout << " using msim version " << Version::version << endl;
+  cout << " quiet ? " << DebugLog::isQuiet () << endl;
  return 0;
 }

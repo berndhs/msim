@@ -27,6 +27,9 @@
 #include "property.h"
 #include "simtime.h"
 #include "tagged-data.h"
+#include "data-destination.h"
+#include "event.h"
+#include "debug-log.h"
 
 #include <map>
 #include <set>
@@ -36,7 +39,8 @@ namespace msim
 
 class Scheduler;
 
-class Connector {
+class Connector 
+{
 public:
 
   class DataPacket {
@@ -63,7 +67,13 @@ public:
     SimpleTaggedDataPtr  data;
     int                  input;
     int                  output;
+    bool operator< (const DataPacket & other)
+    { 
+      MS_TRACE << releaseTime << " ?< " << other.releaseTime << std::endl;
+      return releaseTime < other.releaseTime; 
+    }
   };
+
 
 
   Connector (Scheduler * sched, int inputs=1, int outputs=1);
@@ -71,6 +81,8 @@ public:
 
   int inputs ();
   int outputs ();
+  void registerClient   (int output, DataDestination * client);
+  void unregisterClient  (int output);
 
   Property <Scheduler*> scheduler;
 
@@ -104,20 +116,46 @@ private:
   DelayFunctionType  *delayFunc;
 
   void setOutputDelay (int input, int output, SimTickType delay);
-  
-
 
   /* Data Packet queueing stuff */
   
 
 protected:
 
-  typedef std::multiset <DataPacket>  PacketQueue;
+  typedef std::multiset <DataPacket>   PacketQueue;
   typedef std::map <int, PacketQueue>  PacketQueueMap;
+  typedef std::multiset <SimTime>      ArrivalTimeQueue;
+
+  class OutputEvent : public Event {
+  public:
+    OutputEvent ()
+      :Event (0), connector (0)
+    {}
+    OutputEvent (Scheduler * sch, Connector * conn)
+      :Event (sch),
+       connector (conn)
+    {}
+    OutputEvent *copy () const
+    {
+      return new OutputEvent (scheduler(), connector);
+    }
+    void happen ();
+  private:
+    Connector * connector;
+  };
+
+  void reschedule ();
+  void deliverOutputs ();
+  void deliverOutputs (int output);
 
   SimTickType        **delayMap;
+  DataDestination    **destination;
 
   PacketQueueMap    packetMap;
+  ArrivalTimeQueue  arrivalTimes;
+  SimTime           nextArrival;
+
+  OutputEvent       outputEvent;
 
 };
 

@@ -35,7 +35,7 @@ DataConsumer::DataConsumer (int nPorts)
 
 DataConsumer::Register::Register ()
   :ExpectBuffer (1),
-   TagMatcherClient()
+   DataDestination()
 {
 }
 
@@ -45,8 +45,8 @@ DataConsumer::Register::expectBuffer ()
   return this;
 }
 
-TagMatcherClient * 
-DataConsumer::Register::tagMatcherClient ()
+DataDestination * 
+DataConsumer::Register::dataDestination ()
 {
   return this;
 }
@@ -57,11 +57,11 @@ DataConsumer::portCount () const
   return numPorts;
 }
 
-TagMatcherClient *
+DataDestination *
 DataConsumer::port (int portNum)
 {
   if (0 <= portNum && portNum < numPorts) {
-    return registerFile[portNum].tagMatcherClient();
+    return registerFile[portNum].dataDestination();
   } else {
     return 0;
   }

@@ -34,7 +34,7 @@ TagMatcher::TagMatcher (const TagMatcher & other)
 }
 
 void
-TagMatcher::registerClient (TagMatcherClient * client,  
+TagMatcher::registerClient (DataDestination * client,  
                       DataTagType        tag, 
                       TagDuration           duration)
 {
@@ -52,7 +52,7 @@ TagMatcher::registerClient (TagMatcherClient * client,
 }
 
 int
-TagMatcher::unregisterClient (TagMatcherClient * client)
+TagMatcher::unregisterClient (DataDestination * client)
 {
   ClientMap::iterator it = clientMap.begin();
   int count(0);
@@ -66,7 +66,7 @@ TagMatcher::unregisterClient (TagMatcherClient * client)
 }
 
 int
-TagMatcher::unregisterClient (TagMatcherClient * client, DataTagType tag)
+TagMatcher::unregisterClient (DataDestination * client, DataTagType tag)
 {
   ClientMap::iterator it = clientMap.lower_bound (tag);
   while (it != clientMap.end() && it->first == tag) {
@@ -89,7 +89,7 @@ TagMatcher::dataArrived (SimpleTaggedDataPtr pData)
   ClientMap::iterator it = clientMap.lower_bound (tag);
   bool delivered (false);
   while (it != clientMap.end() && it->first == tag) {
-    TagMatcherClient * client (it->second.client);
+    DataDestination * client (it->second.client);
     if (client) {
       delivered |= client->dataArrived (pData);
       if (delivered && it->second.duration == TagDuration::Once) {

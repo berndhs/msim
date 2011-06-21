@@ -24,5 +24,6 @@ HDR = src/scheduler.h \
       src/delay-buffer.h \
       src/connector.h \
       src/tag-matcher.h \
+      src/data-destination.h \
       src/data-consumer.h \
 

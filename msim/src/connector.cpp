@@ -42,14 +42,20 @@ Connector::Connector (Scheduler * sched,
   :scheduler(sched),
    numInputs (inputs > 0 ? inputs : 0),
    numOutputs (outputs > 0 ? outputs : 0),
-   delayFunc (0)
+   delayFunc (0),
+   nextArrival (SimTime::tooLate()),
+   outputEvent (sched, this)
 {
   delayMap = new SimTickType* [numInputs];
+  destination = new DataDestination* [numInputs];
   for (int i=0; i<numInputs; i++) {
     delayMap[i] = new SimTickType[numOutputs];
     for (int j=0; j<numOutputs; j++) {
       delayMap[i][j] = 1;
     }
+  }
+  for (int d=0; d<numOutputs; d++) {
+    destination[d] = 0;
   }
 }
 
@@ -57,6 +63,24 @@ Connector::~Connector ()
 {
   for (int i=0; i<numInputs; i++) {
     delete[] delayMap[i];
+  }
+}
+
+void
+Connector::registerClient (int output, DataDestination * client)
+{
+  MS_TRACE << " out " << output << " client " << client << std::endl;
+  MS_TRACE << "    numOut " << numOutputs << std::endl;
+  if (0 <= output && output < numOutputs) {
+    destination[output] = client;
+  }
+}
+
+void
+Connector::unregisterClient (int output) 
+{
+  if (0 <= output && output <= numOutputs) {
+    destination[output] = 0;
   }
 }
 
@@ -109,6 +133,7 @@ Connector::setDelayFunction (DelayFunctionType * function)
 SimTime
 Connector::write (int input, int output, SimpleTaggedDataPtr data)
 {
+  MS_TRACE << " in " << input << " out " << output << std::endl;
   if (scheduler() == 0 || data == 0 
       || input < 0 || input >= numInputs
       || output >= numOutputs) {
@@ -137,6 +162,10 @@ Connector::write (int input, int output, SimpleTaggedDataPtr data)
     for (int out=0; out<numOutputs; out++) {
       packetMap[out].insert (DataPacket (arrival, data, input, out));
     }
+  }
+  if (arrivalTimes.find (arrival) == arrivalTimes.end()) {
+    arrivalTimes.insert (arrival);
+    reschedule ();
   }
   return arrival;
 }
@@ -191,6 +220,65 @@ Connector::isReadAvailable (int output)
   SimTime now = scheduler()->simTime();
   PacketQueue::iterator front = packetMap[output].begin ();
   return now >= front->releaseTime;
+}
+
+void
+Connector::reschedule ()
+{
+  MS_TRACE << std::endl;
+  if (!arrivalTimes.empty()) {
+    auto it = arrivalTimes.begin ();
+    SimTime first = *it;
+    if (first < nextArrival) {
+      MS_TRACE << " schedule output for " << first << std::endl;
+      scheduler()->schedule (outputEvent, first);
+      arrivalTimes.erase (it);
+    }
+  }
+}
+
+void
+Connector::deliverOutputs ()
+{
+  for (int d=0; d<numOutputs; d++) {
+    MS_TRACE << d << std::endl;
+    deliverOutputs (d);
+  }
+}
+
+void
+Connector::deliverOutputs (int output)
+{
+  DataDestination * dest = destination[output];
+  if (!dest) {
+    return;
+  }
+  Scheduler * sched = scheduler();
+  if (!sched) {
+    return;
+  }
+  SimTime now = sched->simTime();
+  PacketQueue  &q (packetMap[output]);
+  auto dit = q.begin ();
+  while (dit != q.end()) {
+    DataPacket packet (*dit);
+    if (packet.releaseTime <= now) {
+      if (dest->dataArrived (packet.data)) {
+        q.erase (dit);
+      }
+    }
+    dit ++;
+  }
+}
+
+void
+Connector::OutputEvent::happen ()
+{
+  MS_TRACE << " at time " << scheduler()->simTime() << std::endl;
+  MS_TRACE << " sched " << scheduler() << " conn " << connector << std::endl;
+  if (scheduler() && connector) {
+    connector->deliverOutputs();
+  }
 }
 
 } // namespace

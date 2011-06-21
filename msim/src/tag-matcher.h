@@ -25,30 +25,24 @@
 
 
 #include "tagged-data.h"
+#include "data-destination.h"
 #include <map>
 
 namespace msim
 {
 
-class TagMatcherClient {
-public:
-  TagMatcherClient () {}
-  virtual bool dataArrived (SimpleTaggedDataPtr  pData) = 0;
-};
-
-class TagMatcher 
+class TagMatcher : public DataDestination
 {
 public:
-
 
   TagMatcher ();
   TagMatcher (const TagMatcher & other);
 
-  void registerClient   (TagMatcherClient * client, 
-                   DataTagType        tag, 
-                   TagDuration        duration);
-  int unregisterClient (TagMatcherClient * client);
-  int unregisterClient (TagMatcherClient * client, DataTagType tag);
+  void registerClient  (DataDestination * client, 
+                        DataTagType       tag, 
+                        TagDuration       duration);
+  int unregisterClient (DataDestination * client);
+  int unregisterClient (DataDestination * client, DataTagType tag);
 
   bool dataArrived (SimpleTaggedDataPtr  pData);
 
@@ -56,7 +50,7 @@ private:
 
   class ClientRecord {
   public:
-    ClientRecord (DataTagType t, TagDuration d, TagMatcherClient *pD)
+    ClientRecord (DataTagType t, TagDuration d, DataDestination *pD)
       :tag (t),
        duration (d),
        client (pD)
@@ -68,7 +62,7 @@ private:
     {}
     DataTagType        tag;
     TagDuration        duration;
-    TagMatcherClient  *client;
+    DataDestination  *client;
   };
 
   typedef std::pair <DataTagType, ClientRecord>                       

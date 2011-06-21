@@ -1,5 +1,5 @@
-#ifndef MSIM_DATA_CONSUMER_H
-#define MSIM_DATA_CONSUMER_H
+#ifndef MSIM_DATA_DESTINATION_H
+#define MSIM_DATA_DESTINATION_H
 
 
 /****************************************************************
@@ -24,38 +24,15 @@
  ****************************************************************/
 
 
-#include "data-destination.h"
-#include "expect-buffer.h"
+#include "tagged-data.h"
 
 namespace msim
 {
-class DataConsumer
-{
+
+class DataDestination {
 public:
-
-  DataConsumer (int nPorts);
-
-  int  portCount () const;
-  DataDestination * port (int portNum);
-
-  void expectTag (int port, DataTagType tag);
-  SimpleTaggedDataPtr  readPort (int port);
-
-private:
-
-  class Register : public ExpectBuffer, public DataDestination
-  {
-  public:
-    Register ();
-    bool dataArrived (SimpleTaggedDataPtr pData);
-    ExpectBuffer * expectBuffer ();
-    DataDestination * dataDestination ();
-  private:
-    DataConsumer *parent;
-  };
-
-  int           numPorts;
-  Register     *registerFile;
+  DataDestination () {}
+  virtual bool dataArrived (SimpleTaggedDataPtr  pData) = 0;
 };
 
 } // namespace
