@@ -69,7 +69,7 @@ $(BIN_DIR):
 include make.dep
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
-	$(CXX) $(CXX_CFLAGS) $(INCLUDE) -c $< -o  $@
+	$(CXX) $(CXX_CFLAGS) $(INCLUDE) $(DEFINES) -c $< -o  $@
 	
 FORCE:
 

@@ -23,6 +23,7 @@
 
 
 #include <iostream>
+#if TEST_SOURCE
 #include "../../msim/src/scheduler.h"
 #include "../../msim/src/event.h"
 #include "../../msim/src/version.h"
@@ -32,6 +33,18 @@
 #include "../../msim/src/connector.h"
 #include "../../msim/src/tag-matcher.h"
 #include "../../msim/src/data-consumer.h"
+#endif
+#if TEST_INSTALLED
+#include <msim/scheduler.h>
+#include <msim/event.h>
+#include <msim/version.h>
+#include <msim/tagged-data.h>
+#include <msim/expect-buffer.h>
+#include <msim/debug-log.h>
+#include <msim/connector.h>
+#include <msim/tag-matcher.h>
+#include <msim/data-consumer.h>
+#endif
 
 using namespace std;
 

@@ -44,9 +44,10 @@ usage () {
    echo "$0 [OPTIONS]"
    echo
    echo "Options:"
-   echo "--help             Show this help message and quit"
-   echo "--prefix=PREFIX    Install into PREFIX [${PREFIX}]"
-   echo "--distro=DISTRO    Build for distro [${DISTRO}]"
+   echo "--help               Show this help message and quit"
+   echo "--prefix=PREFIX      Install into PREFIX [${PREFIX}]"
+   echo "--distro=DISTRO      Build for distro [${DISTRO}]"
+   echo "--target=TESTTARGET  Test target <source | installed> [$TESTTARGET]"
    echo
 }
 
@@ -58,6 +59,7 @@ usage () {
 COPYRIGHT=" Copyright (C) 2010 Bernd Stramm"
 PREFIX=/usr
 OPTIONS_FILE=make.inc
+TESTTARGET=source
 find_distro
 
 # 
@@ -92,6 +94,10 @@ case $ac_option in
    DISTRO=$ac_optarg
    $ac_shift
    ;;
+  --target)
+   TEST_TARGET =$ac_optarg
+   $ac_shift
+   ;;
   *)
    echo "Bad option " $ac_option " " $ac_optarg
    usage
@@ -115,11 +121,20 @@ else
 fi
 
 #
-# make options include file for qmake
+# make options include file
 #
 echo "DISTRO = ${DISTRO}" > ${OPTIONS_FILE}
 echo "CONFIG += ${DISTRO}" >> ${OPTIONS_FILE}
-echo "DEFINES += DISTRO_${DISTRO}=1" >> ${OPTIONS_FILE}
+echo "TESTTARGET += ${TESTTARGET}" >> ${OPTIONS_FILE}
+echo "DEFINES += -DDISTRO_${DISTRO}=1" >> ${OPTIONS_FILE}
+if [ X$TESTTARGET == "Xsource" ]
+then
+  echo "DEFINES += -DTEST_SOURCE=1" >> ${OPTIONS_FILE}
+  echo "DEFINES += -DTEST_INSTALLED=0" >> ${OPTIONS_FILE}
+else
+  echo "DEFINES += -DTEST_SOURCE=0" >> ${OPTIONS_FILE}
+  echo "DEFINES += -DTEST_INSTALLED=1" >> ${OPTIONS_FILE}
+fi
 #
 # generate Makefile
 #
@@ -154,5 +169,6 @@ echo "" > config.last
 showmsg ""
 showmsg 'Installation prefix is....' $PREFIX 
 showmsg 'Distro setting is.........' $DISTRO
+showmsg 'Test Target...............' $TESTTARGET
 showmsg 'Now you can build with....' $MAKE_PROGRAM 
 
