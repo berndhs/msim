@@ -60,11 +60,11 @@ all: $(TARGET)
 	ls -ltr $(BIN_DIR)/*
 
 clean: FORCE
-	rm $(OBJ) $(TARGET)
+	rm -f  $(OBJ) $(TARGET)
 
 distclean:
 	$(MAKE) --always-make clean
-	rm $(MAKEFILE)
+	rm -f $(MAKEFILE)
 
 $(TARGET): $(BIN_DIR) $(OBJ_DIR) $(OBJ) 
 	$(CXX) $(CXX_CFLAGS) $(CXX_LDFLAGS) $(OBJ) -o $(TARGET) 
